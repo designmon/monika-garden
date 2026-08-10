@@ -57,6 +57,13 @@
       "planted": "2026-08-10",
       "last_tended": null,
       "note": "freshly planted"
+    },
+    "c1": {
+      "stage": 1,
+      "title": "Orca Intelligence Observatory",
+      "planted": "2026-08-10",
+      "last_tended": null,
+      "note": "freshly planted"
     }
   }
 }
