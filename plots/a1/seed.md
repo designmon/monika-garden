@@ -16,6 +16,12 @@ Over time, this should learn my patterns. It should collect whether its pattern 
 
 It would be beautiful if the map was visual too, so I can understand myself better from above: clusters of fears, recurring themes, evidence, counter-stories, and chosen directions. The point is not to diagnose me; it is to organize my thoughts so I can steer.
 
+Another lens I want in this: after reading James Hollis, I keep thinking about infantilization versus adulthood, and how adulthood is partly learning to hold balance and complexity. I notice that my thinking often jumps to polarized ends, very black and white, and usually more black. It takes mental shortcuts that cut out the complexity reality actually has.
+
+This tool should help me notice when I am collapsing complexity too quickly. Instead of "this means everything is bad" or "I failed" or "they do not care," it should ask what else is true, what I cannot know yet, what mixed reality might be present, and what an adult, balanced response would look like. The goal is not to make everything gray or passive; it is to restore enough complexity that my reaction can align with how I actually want to live.
+
+Maybe it should actively help me find balance and nuance: if my mind offers two extreme poles, it should help me locate the wiser middle or third position. What is the part that is true in my fear? What is the part that is exaggerated? What is the generous interpretation? What boundary or action is still needed? I want practice moving from black-and-white thinking into layered thinking, where I can respond with both honesty and softness.
+
 ## Bloom looks like
 
-A daily experience I can return to: one thought, one named pattern, one value, one reframe, one tiny act of self-kindness, and one best-possible future worth rehearsing. Over time it should become a visual map of my patterns and the paths that help me steer toward the life I want.
+A daily experience I can return to: one thought, one named pattern, one value, one complexity-restoring reframe, one tiny act of self-kindness, and one best-possible future worth rehearsing. Over time it should become a visual map of my patterns and the paths that help me steer toward the life I want.
