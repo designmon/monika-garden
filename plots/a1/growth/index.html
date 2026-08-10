@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Reframe</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: oklch(22% 0.018 265);
+      --muted: oklch(48% 0.025 265);
+      --soft: oklch(62% 0.03 265);
+      --paper: oklch(97% 0.012 82);
+      --panel: oklch(94% 0.018 82);
+      --panel-strong: oklch(90% 0.028 82);
+      --line: oklch(82% 0.025 82);
+      --accent: oklch(51% 0.105 173);
+      --accent-dark: oklch(39% 0.09 173);
+      --warm: oklch(78% 0.087 65);
+      --rose: oklch(77% 0.08 20);
+      --focus: 0 0 0 3px oklch(79% 0.09 173 / 0.5);
+      --shadow: 0 24px 70px oklch(35% 0.045 265 / 0.14);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background:
+        linear-gradient(135deg, oklch(95% 0.02 82), oklch(91% 0.024 173) 58%, oklch(93% 0.022 20));
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 20% 0%, oklch(99% 0.01 82 / 0.85), transparent 34rem),
+        linear-gradient(180deg, oklch(98% 0.01 82 / 0.8), oklch(93% 0.02 82 / 0.85));
+    }
+
+    button,
+    textarea,
+    select,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible,
+    input:focus-visible {
+      outline: none;
+      box-shadow: var(--focus);
+    }
+
+    .shell {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 22px 0 36px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .garden-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 650;
+    }
+
+    .garden-link:hover {
+      color: var(--accent-dark);
+    }
+
+    .date-pill {
+      min-width: 11rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 14px;
+      background: oklch(98% 0.008 82 / 0.75);
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.65fr);
+      align-items: end;
+      gap: 28px;
+      margin: 12px 0 24px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      color: oklch(28% 0.045 173);
+      font-size: 2.35rem;
+      line-height: 1.06;
+      letter-spacing: 0;
+    }
+
+    .intro p {
+      max-width: 66ch;
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .streak {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      background: oklch(98% 0.008 82 / 0.72);
+      box-shadow: var(--shadow);
+    }
+
+    .streak strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--accent-dark);
+      font-size: 2.1rem;
+      line-height: 1;
+    }
+
+    .streak span {
+      color: var(--muted);
+      font-size: 0.94rem;
+      font-weight: 650;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.76fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: oklch(98% 0.01 82 / 0.86);
+      box-shadow: var(--shadow);
+    }
+
+    .practice {
+      padding: 20px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.18rem;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .step {
+      display: grid;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    label {
+      color: oklch(32% 0.03 265);
+      font-size: 0.92rem;
+      font-weight: 750;
+    }
+
+    textarea,
+    select,
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    textarea {
+      min-height: 108px;
+      resize: vertical;
+      padding: 14px;
+      line-height: 1.5;
+    }
+
+    select,
+    input {
+      min-height: 44px;
+      padding: 0 12px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(110px, 0.35fr);
+      gap: 12px;
+    }
+
+    .intensity-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+    }
+
+    input[type="range"] {
+      accent-color: var(--accent);
+      min-height: 28px;
+      padding: 0;
+    }
+
+    .score {
+      min-width: 2.5rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 9px;
+      background: var(--panel);
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .result {
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid oklch(76% 0.047 173);
+      border-radius: 8px;
+      background: oklch(94% 0.03 173);
+    }
+
+    .result textarea {
+      min-height: 132px;
+      background: oklch(98% 0.012 82);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .primary,
+    .secondary,
+    .quiet {
+      min-height: 42px;
+      border-radius: 8px;
+      padding: 0 15px;
+      font-weight: 800;
+      transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), background 180ms ease, color 180ms ease;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: oklch(98% 0.008 173);
+    }
+
+    .primary:hover {
+      background: var(--accent-dark);
+    }
+
+    .secondary {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--ink);
+    }
+
+    .secondary:hover,
+    .quiet:hover {
+      background: var(--panel-strong);
+    }
+
+    .quiet {
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .primary:active,
+    .secondary:active,
+    .quiet:active {
+      transform: translateY(1px);
+    }
+
+    .side {
+      display: grid;
+      gap: 14px;
+    }
+
+    .today,
+    .history {
+      padding: 18px;
+    }
+
+    .today-output {
+      display: grid;
+      gap: 10px;
+      min-height: 168px;
+      align-content: start;
+      color: var(--muted);
+    }
+
+    .saved-card {
+      border-radius: 8px;
+      padding: 14px;
+      background: var(--panel);
+    }
+
+    .saved-card b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--ink);
+      font-size: 0.88rem;
+    }
+
+    .saved-card p {
+      margin: 0;
+      line-height: 1.46;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+      max-height: 455px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .entry {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--paper);
+    }
+
+    .entry time {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--accent-dark);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .entry p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: oklch(97% 0.01 82 / 0.58);
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .microcopy {
+      color: var(--soft);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 850px) {
+      .intro,
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .shell {
+        width: min(100% - 22px, 1120px);
+        padding-top: 14px;
+      }
+
+      .topbar,
+      .section-head,
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar,
+      .section-head {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .date-pill {
+        min-width: 0;
+        width: 100%;
+      }
+
+      .practice,
+      .today,
+      .history {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="topbar" aria-label="Garden navigation">
+      <a class="garden-link" href="../../../viewer/">Back to the garden</a>
+      <div class="date-pill" id="todayLabel"></div>
+    </nav>
+
+    <section class="intro" aria-labelledby="pageTitle">
+      <div>
+        <h1 id="pageTitle">Daily Reframe</h1>
+        <p>One thought, one kinder angle, one small act. Keep the first thought honest, then practice a frame that is also true.</p>
+      </div>
+      <aside class="streak" aria-live="polite">
+        <strong id="streakCount">0</strong>
+        <span id="streakLabel">saved reframes</span>
+      </aside>
+    </section>
+
+    <section class="workspace">
+      <form class="panel practice" id="practiceForm">
+        <div class="section-head">
+          <h2>Today's thought</h2>
+          <button class="quiet" type="button" id="resetToday">Clear today</button>
+        </div>
+
+        <div class="step">
+          <label for="thought">Harsh first thought</label>
+          <textarea id="thought" required placeholder="Write the sentence your mind reached for first."></textarea>
+        </div>
+
+        <div class="split">
+          <div class="step">
+            <label for="pattern">Shape of the thought</label>
+            <select id="pattern">
+              <option value="all">All or nothing</option>
+              <option value="mind">Mind reading</option>
+              <option value="blame">Too much blame</option>
+              <option value="discount">Discounting what counts</option>
+              <option value="future">Future fear</option>
+            </select>
+          </div>
+
+          <div class="step">
+            <label for="intensity">Charge</label>
+            <div class="intensity-row">
+              <input id="intensity" type="range" min="1" max="10" value="6">
+              <span class="score" id="intensityValue">6</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <label for="evidence">One thing that is also true</label>
+          <textarea id="evidence" placeholder="A fact, a counterexample, or a quieter detail."></textarea>
+        </div>
+
+        <div class="step">
+          <label for="kindness">Tiny act of self-kindness</label>
+          <input id="kindness" placeholder="A walk, a glass of water, one honest message, five quiet breaths">
+        </div>
+
+        <div class="actions">
+          <button class="primary" type="submit">Make reframe</button>
+          <button class="secondary" type="button" id="saveEntry">Save practice</button>
+        </div>
+
+        <div class="result" aria-live="polite">
+          <div class="step">
+            <label for="reframe">Kinder, truer frame</label>
+            <textarea id="reframe" placeholder="Your reframe will appear here. Edit it until it sounds like you."></textarea>
+          </div>
+        </div>
+      </form>
+
+      <aside class="side">
+        <section class="panel today">
+          <div class="section-head">
+            <h2>Saved today</h2>
+            <button class="quiet" type="button" id="exportEntries">Export</button>
+          </div>
+          <div class="today-output" id="todayOutput"></div>
+          <p class="microcopy">Entries stay in this browser.</p>
+        </section>
+
+        <section class="panel history">
+          <h2>Practice log</h2>
+          <div class="history-list" id="historyList"></div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const storageKey = "daily-reframe:a1";
+    const $ = (id) => document.getElementById(id);
+    const fields = {
+      thought: $("thought"),
+      pattern: $("pattern"),
+      intensity: $("intensity"),
+      evidence: $("evidence"),
+      kindness: $("kindness"),
+      reframe: $("reframe")
+    };
+
+    const patternLines = {
+      all: "This does not have to be all one thing. There can be a hard part and a human part at the same time.",
+      mind: "I do not know the whole story inside anyone else. I can respond to what is real, then ask for clarity.",
+      blame: "Responsibility can be shared without turning into a sentence against me.",
+      discount: "The small good pieces still count, especially when my mind wants to skip past them.",
+      future: "The feared outcome is one possibility, not a prophecy. I can choose the next useful step."
+    };
+
+    function todayKey() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function displayDate(key) {
+      return new Date(`${key}T12:00:00`).toLocaleDateString(undefined, {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+      });
+    }
+
+    function loadEntries() {
+      try {
+        return JSON.parse(localStorage.getItem(storageKey)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveEntries(entries) {
+      localStorage.setItem(storageKey, JSON.stringify(entries));
+    }
+
+    function compact(text) {
+      return text.trim().replace(/\s+/g, " ");
+    }
+
+    function buildReframe() {
+      const thought = compact(fields.thought.value);
+      const evidence = compact(fields.evidence.value);
+      const kindness = compact(fields.kindness.value);
+      const charge = fields.intensity.value;
+      const line = patternLines[fields.pattern.value];
+      const opening = thought
+        ? `My first thought was: "${thought}"`
+        : "My first thought came in too sharp to trust as the whole truth.";
+      const evidenceLine = evidence
+        ? `Another true detail is: ${evidence}`
+        : "Another true detail is still worth naming before I decide what this means.";
+      const kindnessLine = kindness
+        ? `Today I can answer with: ${kindness}.`
+        : "Today I can answer with one small act of care.";
+
+      fields.reframe.value = `${opening}\n\nThe charge is ${charge}/10, so I do not need to argue with it. I need to hold it carefully. ${line}\n\n${evidenceLine}\n\n${kindnessLine}`;
+    }
+
+    function render() {
+      const entries = loadEntries().sort((a, b) => b.date.localeCompare(a.date));
+      const today = todayKey();
+      const todaysEntry = entries.find((entry) => entry.date === today);
+      $("todayLabel").textContent = displayDate(today);
+      $("streakCount").textContent = entries.length;
+      $("streakLabel").textContent = entries.length === 1 ? "saved reframe" : "saved reframes";
+
+      if (todaysEntry) {
+        $("todayOutput").innerHTML = `
+          <article class="saved-card">
+            <b>${escapeHtml(todaysEntry.patternLabel)} at ${todaysEntry.intensity}/10</b>
+            <p>${escapeHtml(todaysEntry.reframe)}</p>
+          </article>
+        `;
+      } else {
+        $("todayOutput").innerHTML = `<div class="empty">No reframe saved for today yet.</div>`;
+      }
+
+      if (!entries.length) {
+        $("historyList").innerHTML = `<div class="empty">The log begins with the first saved practice.</div>`;
+        return;
+      }
+
+      $("historyList").innerHTML = entries.map((entry) => `
+        <article class="entry">
+          <time datetime="${entry.date}">${displayDate(entry.date)}</time>
+          <p>${escapeHtml(entry.reframe)}</p>
+        </article>
+      `).join("");
+    }
+
+    function escapeHtml(value) {
+      return value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function savePractice() {
+      if (!compact(fields.reframe.value)) {
+        buildReframe();
+      }
+
+      const date = todayKey();
+      const entries = loadEntries().filter((entry) => entry.date !== date);
+      const patternLabel = fields.pattern.options[fields.pattern.selectedIndex].text;
+      entries.push({
+        date,
+        thought: compact(fields.thought.value),
+        pattern: fields.pattern.value,
+        patternLabel,
+        intensity: fields.intensity.value,
+        evidence: compact(fields.evidence.value),
+        kindness: compact(fields.kindness.value),
+        reframe: compact(fields.reframe.value)
+      });
+      saveEntries(entries);
+      render();
+    }
+
+    $("practiceForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      buildReframe();
+    });
+
+    $("saveEntry").addEventListener("click", savePractice);
+
+    $("resetToday").addEventListener("click", () => {
+      const entries = loadEntries().filter((entry) => entry.date !== todayKey());
+      saveEntries(entries);
+      Object.values(fields).forEach((field) => {
+        if (field.tagName !== "SELECT") field.value = "";
+      });
+      fields.intensity.value = 6;
+      $("intensityValue").textContent = "6";
+      render();
+    });
+
+    $("exportEntries").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(loadEntries(), null, 2)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "daily-reframes.json";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
+
+    fields.intensity.addEventListener("input", () => {
+      $("intensityValue").textContent = fields.intensity.value;
+    });
+
+    render();
+  </script>
+</body>
+</html>
