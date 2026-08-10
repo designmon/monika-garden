@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cruella i jej szajka</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #19171c;
+      --paper: #fff7de;
+      --red: #c61d30;
+      --gold: #f2b640;
+      --mint: #68c5aa;
+      --blue: #2f6fba;
+      --night: #1d2342;
+      --shadow: rgba(25, 23, 28, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 10%, #ffe772 0 7rem, transparent 7.1rem),
+        linear-gradient(140deg, #f4564c 0 22%, #78d6bb 22% 48%, #447cc8 48% 75%, #221d38 75% 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mix-blend-mode: soft-light;
+    }
+
+    .shell {
+      width: min(1120px, calc(100% - 32px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 22px 0 28px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 14px;
+    }
+
+    .top {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      color: #fffbea;
+      text-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.45rem;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .tagline {
+      margin: 6px 0 0;
+      max-width: 46rem;
+      font-size: 1rem;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.35;
+    }
+
+    .garden-link {
+      flex: 0 0 auto;
+      color: #fffbea;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-weight: 800;
+      text-decoration: none;
+      border-bottom: 2px solid currentColor;
+    }
+
+    .book {
+      min-height: 610px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
+      overflow: hidden;
+      border: 6px solid #19171c;
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: 12px 14px 0 rgba(25, 23, 28, 0.35);
+    }
+
+    .picture {
+      position: relative;
+      min-height: 610px;
+      overflow: hidden;
+      background: linear-gradient(#ffcf83 0 43%, #6ecdb2 43% 67%, #2d304e 67% 100%);
+    }
+
+    .skyline {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 112px;
+      height: 150px;
+      background:
+        linear-gradient(90deg, #2d304e 0 11%, transparent 11% 14%, #2d304e 14% 22%, transparent 22% 28%, #2d304e 28% 36%, transparent 36% 42%, #2d304e 42% 54%, transparent 54% 60%, #2d304e 60% 73%, transparent 73% 80%, #2d304e 80% 100%);
+    }
+
+    .tower {
+      position: absolute;
+      width: 100px;
+      height: 260px;
+      right: 38px;
+      bottom: 100px;
+      clip-path: polygon(49% 0, 57% 0, 64% 54%, 91% 100%, 69% 100%, 55% 68%, 45% 68%, 31% 100%, 9% 100%, 36% 54%);
+      background: repeating-linear-gradient(0deg, #1f2038 0 9px, #f2b640 9px 12px);
+      opacity: 0.9;
+    }
+
+    .road {
+      position: absolute;
+      left: -6%;
+      right: -6%;
+      bottom: -32px;
+      height: 190px;
+      transform: skewY(-5deg);
+      background: #222433;
+      border-top: 7px solid #f7ebc7;
+    }
+
+    .road::after {
+      content: "";
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      top: 74px;
+      height: 8px;
+      background: repeating-linear-gradient(90deg, #f7ebc7 0 72px, transparent 72px 132px);
+    }
+
+    .car {
+      position: absolute;
+      left: 9%;
+      bottom: 64px;
+      width: 255px;
+      height: 92px;
+      transform: rotate(-5deg);
+      animation: bob 1.8s ease-in-out infinite;
+    }
+
+    .car-body {
+      position: absolute;
+      inset: 26px 0 12px;
+      border: 5px solid var(--ink);
+      border-radius: 42px 62px 24px 18px;
+      background: linear-gradient(120deg, #ffe261, var(--gold));
+    }
+
+    .car-top {
+      position: absolute;
+      left: 76px;
+      top: 0;
+      width: 95px;
+      height: 58px;
+      border: 5px solid var(--ink);
+      border-bottom: 0;
+      border-radius: 54px 54px 0 0;
+      background: #fff9d9;
+    }
+
+    .wheel {
+      position: absolute;
+      bottom: 0;
+      width: 48px;
+      height: 48px;
+      border: 6px solid var(--ink);
+      border-radius: 50%;
+      background: #fff9e8;
+    }
+
+    .wheel.left {
+      left: 38px;
+    }
+
+    .wheel.right {
+      right: 34px;
+    }
+
+    .cruella {
+      position: absolute;
+      left: 104px;
+      bottom: 124px;
+      width: 98px;
+      height: 178px;
+      transform-origin: bottom center;
+      animation: lean 2.4s ease-in-out infinite;
+    }
+
+    .hair {
+      position: absolute;
+      left: 12px;
+      top: 0;
+      width: 74px;
+      height: 62px;
+      border: 5px solid var(--ink);
+      border-radius: 48% 52% 45% 45%;
+      background: linear-gradient(90deg, #f8f4e7 0 50%, #17151c 50% 100%);
+    }
+
+    .face {
+      position: absolute;
+      left: 25px;
+      top: 45px;
+      width: 48px;
+      height: 52px;
+      border: 4px solid var(--ink);
+      border-radius: 42% 42% 50% 50%;
+      background: #ffd0b5;
+    }
+
+    .coat {
+      position: absolute;
+      left: 12px;
+      top: 90px;
+      width: 76px;
+      height: 86px;
+      border: 5px solid var(--ink);
+      border-radius: 48px 48px 12px 12px;
+      background: linear-gradient(90deg, #f8f4e7 0 33%, #17151c 33% 66%, #f8f4e7 66%);
+    }
+
+    .smoke {
+      position: absolute;
+      left: 74px;
+      top: 62px;
+      width: 70px;
+      height: 48px;
+      border-top: 4px dashed rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      transform: rotate(-14deg);
+      animation: drift 3s linear infinite;
+    }
+
+    .gang,
+    .cats,
+    .fridges,
+    .perfumes,
+    .dance {
+      position: absolute;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 260ms ease, transform 260ms ease;
+    }
+
+    .scene-gang .gang,
+    .scene-cold .fridges,
+    .scene-shop .perfumes,
+    .scene-moon .cats,
+    .scene-moon .dance {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .gang {
+      left: 44%;
+      bottom: 142px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .bandit {
+      width: 52px;
+      height: var(--h);
+      border: 4px solid var(--ink);
+      border-radius: 24px 24px 8px 8px;
+      background: var(--c);
+      position: relative;
+    }
+
+    .bandit::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      top: -32px;
+      width: 28px;
+      height: 28px;
+      border: 4px solid var(--ink);
+      border-radius: 50%;
+      background: #ffd0b5;
+    }
+
+    .bandit::after {
+      content: "";
+      position: absolute;
+      left: -5px;
+      top: -44px;
+      width: 54px;
+      height: 22px;
+      border: 4px solid var(--ink);
+      border-radius: 50% 50% 8px 8px;
+      background: #cab1ff;
+    }
+
+    .fridges {
+      right: 18%;
+      bottom: 126px;
+      display: flex;
+      gap: 16px;
+    }
+
+    .fridge {
+      width: 66px;
+      height: 120px;
+      border: 5px solid var(--ink);
+      border-radius: 8px;
+      background: #e4f8ff;
+      transform: rotate(var(--r));
+      box-shadow: 5px 5px 0 var(--shadow);
+    }
+
+    .fridge::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 46px;
+      border-top: 4px solid var(--ink);
+    }
+
+    .fridge::after {
+      content: "";
+      position: absolute;
+      right: 8px;
+      top: 58px;
+      width: 6px;
+      height: 24px;
+      border-radius: 3px;
+      background: var(--ink);
+    }
+
+    .perfumes {
+      left: 48%;
+      bottom: 118px;
+      width: 245px;
+      height: 150px;
+    }
+
+    .bottle {
+      position: absolute;
+      bottom: 0;
+      width: 46px;
+      height: 78px;
+      border: 4px solid var(--ink);
+      border-radius: 10px 10px 16px 16px;
+      background: var(--c);
+      transform: rotate(var(--r));
+    }
+
+    .bottle::before {
+      content: "";
+      position: absolute;
+      left: 13px;
+      top: -22px;
+      width: 14px;
+      height: 22px;
+      border: 4px solid var(--ink);
+      border-bottom: 0;
+      background: #fff7de;
+    }
+
+    .burst {
+      position: absolute;
+      right: 22px;
+      bottom: 70px;
+      width: 76px;
+      height: 76px;
+      background: #fff06b;
+      border: 5px solid var(--ink);
+      clip-path: polygon(50% 0, 61% 30%, 93% 15%, 73% 46%, 100% 62%, 66% 66%, 70% 100%, 47% 74%, 22% 100%, 29% 64%, 0 55%, 29% 43%, 11% 11%, 42% 30%);
+    }
+
+    .cats {
+      right: 18px;
+      top: 74px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .cat {
+      width: 38px;
+      height: 46px;
+      border: 4px solid var(--ink);
+      border-radius: 18px 18px 10px 10px;
+      background: var(--c);
+      position: relative;
+      animation: tap 0.8s steps(2, end) infinite;
+    }
+
+    .cat::before,
+    .cat::after {
+      content: "";
+      position: absolute;
+      top: -11px;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-bottom: 15px solid var(--ink);
+    }
+
+    .cat::before {
+      left: 0;
+    }
+
+    .cat::after {
+      right: 0;
+    }
+
+    .dance {
+      left: 44%;
+      bottom: 132px;
+      width: 164px;
+      height: 168px;
+    }
+
+    .moon {
+      position: absolute;
+      left: 18px;
+      top: 0;
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      background: #fff3ae;
+      box-shadow: 0 0 0 12px rgba(255, 243, 174, 0.16);
+    }
+
+    .roman {
+      position: absolute;
+      right: 4px;
+      bottom: 0;
+      width: 66px;
+      height: 118px;
+      border: 5px solid var(--ink);
+      border-radius: 38px 38px 12px 12px;
+      background: #5fc4ff;
+      transform: rotate(8deg);
+    }
+
+    .window {
+      position: absolute;
+      left: 22px;
+      top: 78px;
+      width: 210px;
+      height: 154px;
+      border: 7px solid var(--ink);
+      border-radius: 52% 52% 8px 8px;
+      background: linear-gradient(#1d2342, #29305a);
+      box-shadow: inset 0 -32px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .window::before {
+      content: "";
+      position: absolute;
+      inset: 0 48%;
+      background: var(--ink);
+    }
+
+    .window::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 48%;
+      height: 7px;
+      background: var(--ink);
+    }
+
+    .page {
+      padding: 32px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+      background:
+        linear-gradient(90deg, rgba(25, 23, 28, 0.08) 0 1px, transparent 1px),
+        var(--paper);
+      background-size: 28px 28px;
+      border-left: 5px solid var(--ink);
+    }
+
+    .chapter {
+      margin: 0;
+      color: var(--red);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.82rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .story-title {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 1.05;
+    }
+
+    .story {
+      min-height: 310px;
+      font-size: 1.35rem;
+      line-height: 1.42;
+    }
+
+    .story p {
+      margin: 0 0 1rem;
+    }
+
+    .chorus {
+      padding: 14px 16px;
+      border: 4px solid var(--ink);
+      border-radius: 8px;
+      background: #fff9e8;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-weight: 800;
+      box-shadow: 5px 5px 0 var(--shadow);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
+      gap: 10px;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+    }
+
+    button {
+      min-width: 44px;
+      min-height: 44px;
+      border: 3px solid var(--ink);
+      border-radius: 8px;
+      background: #fff9e8;
+      color: var(--ink);
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+
+    button:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--ink);
+    }
+
+    .read {
+      padding-inline: 12px;
+      background: #c8f0e3;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .dot.active {
+      background: var(--red);
+    }
+
+    .footer-note {
+      margin: 0;
+      color: #fffbea;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.22);
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: rotate(-5deg) translateY(0); }
+      50% { transform: rotate(-3deg) translateY(-8px); }
+    }
+
+    @keyframes lean {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(4deg); }
+    }
+
+    @keyframes drift {
+      from { transform: rotate(-14deg) translateX(0); opacity: 1; }
+      to { transform: rotate(-14deg) translateX(28px); opacity: 0.18; }
+    }
+
+    @keyframes tap {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    @media (max-width: 820px) {
+      .shell {
+        width: min(100% - 20px, 620px);
+        padding-top: 14px;
+      }
+
+      .top {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .book {
+        grid-template-columns: 1fr;
+        min-height: 0;
+      }
+
+      .picture {
+        min-height: 360px;
+      }
+
+      .page {
+        border-left: 0;
+        border-top: 5px solid var(--ink);
+        padding: 24px;
+      }
+
+      .story {
+        min-height: 0;
+        font-size: 1.12rem;
+      }
+
+      .controls {
+        grid-template-columns: auto 1fr auto;
+      }
+
+      .read {
+        grid-column: 1 / -1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="top">
+      <div>
+        <h1>Cruella i jej szajka</h1>
+        <p class="tagline">Pierwszy zeszyt gagow: elegancki chaos, zloty samochod, lodowki zamiast klimatyzatorow i Roman, ktory zawsze ratuje sytuacje.</p>
+      </div>
+      <a class="garden-link" href="../../../viewer/">powrot do ogrodu</a>
+    </header>
+
+    <main class="book" aria-live="polite">
+      <section class="picture scene-gang" id="picture" aria-label="Ilustracja odcinka">
+        <div class="skyline"></div>
+        <div class="tower"></div>
+        <div class="window"></div>
+        <div class="road"></div>
+        <div class="car" aria-hidden="true">
+          <div class="car-top"></div>
+          <div class="car-body"></div>
+          <div class="wheel left"></div>
+          <div class="wheel right"></div>
+        </div>
+        <div class="cruella" aria-hidden="true">
+          <div class="hair"></div>
+          <div class="face"></div>
+          <div class="coat"></div>
+          <div class="smoke"></div>
+        </div>
+        <div class="gang" aria-hidden="true">
+          <div class="bandit" style="--h: 122px; --c: #ff8074"></div>
+          <div class="bandit" style="--h: 92px; --c: #f2b640"></div>
+          <div class="bandit" style="--h: 108px; --c: #9bd7ff"></div>
+        </div>
+        <div class="fridges" aria-hidden="true">
+          <div class="fridge" style="--r: -7deg"></div>
+          <div class="fridge" style="--r: 9deg"></div>
+        </div>
+        <div class="perfumes" aria-hidden="true">
+          <div class="bottle" style="left: 8px; --r: -14deg; --c: #ffd5e8"></div>
+          <div class="bottle" style="left: 62px; --r: 8deg; --c: #d7f8ff"></div>
+          <div class="bottle" style="left: 118px; --r: 19deg; --c: #fff3a1"></div>
+          <div class="burst"></div>
+        </div>
+        <div class="cats" aria-hidden="true">
+          <div class="cat" style="--c: #fff9e8"></div>
+          <div class="cat" style="--c: #f7a1a1"></div>
+          <div class="cat" style="--c: #9bd7ff"></div>
+        </div>
+        <div class="dance" aria-hidden="true">
+          <div class="moon"></div>
+          <div class="roman"></div>
+        </div>
+      </section>
+
+      <section class="page">
+        <div>
+          <p class="chapter" id="chapter">odcinek 1</p>
+          <h2 class="story-title" id="storyTitle">Plan doskonaly, czyli prawie</h2>
+        </div>
+        <article class="story" id="storyText"></article>
+        <div>
+          <p class="chorus" id="chorus"></p>
+          <nav class="controls" aria-label="Przewracanie stron">
+            <button type="button" id="prev" aria-label="Poprzednia strona">&lt;</button>
+            <div class="dots" id="dots" aria-hidden="true"></div>
+            <button type="button" id="next" aria-label="Nastepna strona">&gt;</button>
+            <button type="button" class="read" id="read">czytaj</button>
+          </nav>
+        </div>
+      </section>
+    </main>
+
+    <p class="footer-note">Zeszyt rosnie od sceny do sceny: rytm ma byc prosty, glosny i do czytania na kanapie.</p>
+  </div>
+
+  <script>
+    const pages = [
+      {
+        scene: "scene-gang",
+        chapter: "odcinek 1",
+        title: "Plan doskonaly, czyli prawie",
+        text: [
+          "Cruella de Mon mieszkala na najwyzszym pietrze starej paryskiej kamienicy. Miala dlugi papieros, zloty samochod i szajke, ktora na haslo \"plan doskonaly\" natychmiast przewracala krzeslo.",
+          "Silacz Eryk napinal miesnie, Chudy Stasiek chowal sie za latarnia, a Roztanczony Roman klanial sie tak elegancko, ze nawet klamka chciala mu podac reke."
+        ],
+        chorus: "Powtarzaj: plan jest doskonaly, tylko szczegoly uciekly!"
+      },
+      {
+        scene: "scene-cold",
+        chapter: "odcinek 2",
+        title: "Napad na chlod",
+        text: [
+          "W najwiekszy upal Cruella zarzadzila: \"Kradniemy klimatyzatory!\" Dla niepoznaki wszyscy przebrali sie za bardzo powazne babcie.",
+          "Nikt jednak nie wiedzial, jak wyglada klimatyzator. Po godzinie do bazy przyjechaly dwie lodowki, jedna zamrazarka i Stasiek z polka na glowie."
+        ],
+        chorus: "Roman szepnal: \"Przynajmniej mamy gdzie schowac lemoniade.\""
+      },
+      {
+        scene: "scene-shop",
+        chapter: "odcinek 3",
+        title: "Perfumy w powietrzu",
+        text: [
+          "W perfumerii Cruella chciala pachniec jak dama z filmu. Eryk kichnal raz, drugi i trzeci, az flakony zaczely tanczyc po polkach.",
+          "Jeden psiknal Staska w ucho, drugi Romana w mankiet, a trzeci polecial tak wysoko, ze wszyscy przez chwile pachnieli jak bardzo bogata fontanna."
+        ],
+        chorus: "Cruella westchnela: \"Chaos tak, ale elegancki.\""
+      },
+      {
+        scene: "scene-gang",
+        chapter: "odcinek 4",
+        title: "Jazda bez kapeluszy",
+        text: [
+          "Zloty samochod ruszyl z takim rozmachem, ze sukienki furkotaly jak flagi, kapelusze robily petle, a przechodnie krecili sie w powietrzu jak cukrowa wata.",
+          "Cruella smiala sie strasznie, Eryk trzymal drzwi, Stasiek trzymal Eryka, a Roman trzymal klase."
+        ],
+        chorus: "Gdy auto zahamowalo, tylko Roman wysiadl bez zmarszczki."
+      },
+      {
+        scene: "scene-moon",
+        chapter: "dobranoc",
+        title: "Kocia orkiestra",
+        text: [
+          "Wieczorem w kamienicy robilo sie cicho. Kociaki wskakiwaly na pianino, dach i parapet, po czym graly koncert dla calego Paryza.",
+          "Cruella tanczyla z Romanem przy wielkim oknie. Za nimi blyszczala wieza Eiffla, a wszystkie nieudane napady wygladaly przez chwile jak najlepsze przygody na swiecie."
+        ],
+        chorus: "Roman powiedzial: \"Jutro tez cos zepsujemy, ale pieknie.\""
+      }
+    ];
+
+    let index = 0;
+    const picture = document.getElementById("picture");
+    const chapter = document.getElementById("chapter");
+    const storyTitle = document.getElementById("storyTitle");
+    const storyText = document.getElementById("storyText");
+    const chorus = document.getElementById("chorus");
+    const dots = document.getElementById("dots");
+    const prev = document.getElementById("prev");
+    const next = document.getElementById("next");
+    const read = document.getElementById("read");
+
+    function render() {
+      const page = pages[index];
+      picture.className = `picture ${page.scene}`;
+      chapter.textContent = page.chapter;
+      storyTitle.textContent = page.title;
+      storyText.innerHTML = page.text.map((paragraph) => `<p>${paragraph}</p>`).join("");
+      chorus.textContent = page.chorus;
+      dots.innerHTML = pages.map((_, dotIndex) => (
+        `<span class="dot ${dotIndex === index ? "active" : ""}"></span>`
+      )).join("");
+    }
+
+    function turn(direction) {
+      index = (index + direction + pages.length) % pages.length;
+      window.speechSynthesis?.cancel();
+      render();
+    }
+
+    function readPage() {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const page = pages[index];
+      const utterance = new SpeechSynthesisUtterance([
+        page.title,
+        ...page.text,
+        page.chorus
+      ].join(". "));
+      utterance.lang = "pl-PL";
+      utterance.rate = 0.95;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    prev.addEventListener("click", () => turn(-1));
+    next.addEventListener("click", () => turn(1));
+    read.addEventListener("click", readPage);
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") turn(-1);
+      if (event.key === "ArrowRight") turn(1);
+    });
+
+    render();
+  </script>
+</body>
+</html>

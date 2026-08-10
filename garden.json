@@ -27,11 +27,12 @@
       "door": "plots/a3/growth/index.html"
     },
     "a4": {
-      "stage": 1,
+      "stage": 2,
       "title": "Cruella I Jej Szajka",
       "planted": "2026-08-10",
-      "last_tended": null,
-      "note": "freshly planted"
+      "last_tended": "2026-08-10T15:45:21Z",
+      "note": "five-page illustrated Polish storybook sprout",
+      "door": "plots/a4/growth/index.html"
     },
     "b1": {
       "stage": 1,
