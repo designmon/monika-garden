@@ -1,5 +1,62 @@
 {
   "name": "Monika's garden",
   "size": [4, 4],
-  "plots": {}
+  "plots": {
+    "a1": {
+      "stage": 1,
+      "title": "Daily Reframe",
+      "planted": "2026-08-10",
+      "last_tended": null,
+      "note": "freshly planted"
+    },
+    "a2": {
+      "stage": 1,
+      "title": "Values Compass",
+      "planted": "2026-08-10",
+      "last_tended": null,
+      "note": "freshly planted"
+    },
+    "a3": {
+      "stage": 1,
+      "title": "Sunlight For The Browser",
+      "planted": "2026-08-10",
+      "last_tended": null,
+      "note": "freshly planted"
+    },
+    "a4": {
+      "stage": 1,
+      "title": "Cruella I Jej Szajka",
+      "planted": "2026-08-10",
+      "last_tended": null,
+      "note": "freshly planted"
+    },
+    "b1": {
+      "stage": 1,
+      "title": "Interesting Takes Engine",
+      "planted": "2026-08-10",
+      "last_tended": null,
+      "note": "freshly planted"
+    },
+    "b2": {
+      "stage": 1,
+      "title": "Daily Brightness",
+      "planted": "2026-08-10",
+      "last_tended": null,
+      "note": "freshly planted"
+    },
+    "b3": {
+      "stage": 1,
+      "title": "Visual Voice Calendar",
+      "planted": "2026-08-10",
+      "last_tended": null,
+      "note": "freshly planted"
+    },
+    "b4": {
+      "stage": 1,
+      "title": "Style Atlas",
+      "planted": "2026-08-10",
+      "last_tended": null,
+      "note": "freshly planted"
+    }
+  }
 }
