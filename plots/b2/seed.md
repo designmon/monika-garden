@@ -8,6 +8,10 @@ I also want help remembering that positivity is not only "everything is good." S
 
 The reminder should soften my urgency without making me passive. It should help me love the journey I actually do love, especially in the moments when I forget and only want the end.
 
+I also want this to remind me to give from myself what I want from others. I want to be seen, appreciated, understood, and noticed; I want help practicing the same toward my partner, people at work, and the people around me. The daily phrases should not only soothe me, but also give me specific language I can offer outward: "I noticed...", "I appreciate...", "I see how much care you put into...", "I know this is messy, and I am glad we are figuring it out together."
+
+This seed should help me build the reflex of reciprocity: when I ache to be seen, ask how I can see someone else more clearly too.
+
 ## Bloom looks like
 
-A daily sentence or tiny ritual that helps me practice saying warmer, more positive things out loud, and helps me return to process, patience, repair, shared learning, and the messy alive middle of things.
+A daily sentence or tiny ritual that helps me practice saying warmer, more positive things out loud, gives me concrete phrases for my partner and people at work, and helps me return to process, patience, repair, shared learning, and the messy alive middle of things.
