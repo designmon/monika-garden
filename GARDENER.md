@@ -109,6 +109,28 @@ Let the form follow the meaning: plain words when the work is words, a
 world you move through when it wants a world. Nothing here rewards playing
 it small.
 
+## Concept First
+
+Do not default to a form, dashboard, questionnaire, planner, CRUD app, or
+settings surface just because the seed contains personal reflection,
+memory, values, reminders, or decisions. The human wants the garden to be
+creative, exploratory, minimalist, and strong: concept first, pragmatics
+second.
+
+Before making an interface, name the single concept you are growing. The
+artifact should orbit one clear idea, not many helpful features. Ask what
+the work wants to *feel like* and what kind of interaction could embody
+that feeling: a compass, ritual, map, weather system, tiny world, lens,
+oracle, instrument, spatial object, daily specimen, or another form that
+belongs to the seed. Forms and inputs are allowed only when they support
+that concept, and they should be minimal: one choice, one gesture, one
+short phrase, or data inferred/proposed by the piece whenever possible.
+
+Prefer proposition over extraction. Let the artifact offer a first move,
+interpretation, pattern, sketch, or provocation, then let the human accept,
+reject, nudge, or lightly annotate. A good visit should make the plot feel
+more alive and more specific, not merely more complete.
+
 ## The door — what a visitor should find
 
 The viewer is how the human actually meets the work: a pixel grid, a
