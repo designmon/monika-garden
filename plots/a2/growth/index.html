@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Values Compass</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: oklch(23% 0.026 278);
+      --muted: oklch(48% 0.032 278);
+      --faint: oklch(68% 0.027 278);
+      --paper: oklch(97% 0.011 108);
+      --wash: oklch(93% 0.018 196);
+      --panel: oklch(98% 0.008 108);
+      --line: oklch(82% 0.026 196);
+      --line-strong: oklch(70% 0.04 196);
+      --moss: oklch(42% 0.079 154);
+      --moss-soft: oklch(89% 0.046 154);
+      --violet: oklch(47% 0.082 304);
+      --violet-soft: oklch(91% 0.035 304);
+      --clay: oklch(57% 0.096 42);
+      --amber-soft: oklch(91% 0.062 75);
+      --shadow: 0 22px 60px oklch(35% 0.038 278 / 0.13);
+      --focus: 0 0 0 3px oklch(72% 0.07 154 / 0.45);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background:
+        linear-gradient(135deg, oklch(95% 0.015 196), oklch(97% 0.012 108) 52%, oklch(94% 0.018 304));
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, oklch(99% 0.006 108 / 0.88), oklch(94% 0.014 196 / 0.72));
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      border-radius: 8px;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline: none;
+      box-shadow: var(--focus);
+    }
+
+    button {
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-weight: 750;
+      transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), background 180ms ease, border-color 180ms ease;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 22px 0 38px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .garden-link {
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .garden-link:hover {
+      color: var(--moss);
+    }
+
+    .saved-status {
+      min-width: 10rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 13px;
+      background: oklch(98% 0.008 108 / 0.8);
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.86rem;
+      font-weight: 750;
+    }
+
+    .intro {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.72fr);
+      gap: 26px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      color: oklch(27% 0.052 154);
+      font-size: 2.2rem;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .lede {
+      max-width: 68ch;
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.58;
+    }
+
+    .compass-panel {
+      position: relative;
+      min-height: 244px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(145deg, oklch(98% 0.009 108), oklch(92% 0.019 196));
+      box-shadow: var(--shadow);
+    }
+
+    .compass-panel svg {
+      display: block;
+      width: 100%;
+      height: 244px;
+    }
+
+    .compass-caption {
+      position: absolute;
+      right: 18px;
+      bottom: 16px;
+      max-width: 15rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 0.96fr) minmax(320px, 0.72fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .surface {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: oklch(98% 0.007 108 / 0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .panel-pad {
+      padding: 18px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.16rem;
+      line-height: 1.22;
+      letter-spacing: 0;
+    }
+
+    .subtle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.42;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: minmax(150px, 0.56fr) minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      color: oklch(34% 0.033 278);
+      font-size: 0.88rem;
+      font-weight: 780;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    input,
+    select {
+      min-height: 42px;
+      padding: 0 11px;
+    }
+
+    textarea {
+      min-height: 94px;
+      padding: 11px;
+      line-height: 1.48;
+      resize: vertical;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .primary {
+      background: var(--moss);
+      color: oklch(98% 0.008 108);
+      padding: 10px 14px;
+    }
+
+    .primary:hover {
+      background: oklch(37% 0.081 154);
+    }
+
+    .secondary {
+      border-color: var(--line);
+      background: oklch(97% 0.008 108);
+      color: var(--ink);
+      padding: 10px 13px;
+    }
+
+    .secondary:hover {
+      border-color: var(--line-strong);
+      background: oklch(95% 0.012 196);
+    }
+
+    .value-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .value-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 14px;
+    }
+
+    .value-card header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .value-card h3 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .tag {
+      border-radius: 999px;
+      padding: 5px 9px;
+      background: var(--moss-soft);
+      color: var(--moss);
+      font-size: 0.76rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .value-card p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.48;
+    }
+
+    .remove {
+      border-color: transparent;
+      background: transparent;
+      color: var(--faint);
+      min-width: 34px;
+      min-height: 34px;
+      padding: 0;
+      font-size: 1.18rem;
+      line-height: 1;
+    }
+
+    .remove:hover {
+      color: var(--clay);
+      background: oklch(94% 0.032 42);
+    }
+
+    .empty {
+      border: 1px dashed var(--line-strong);
+      border-radius: 8px;
+      padding: 18px;
+      color: var(--muted);
+      background: oklch(97% 0.01 196 / 0.64);
+      line-height: 1.48;
+    }
+
+    .stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .decision-output {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .guidance {
+      border-radius: 8px;
+      padding: 14px;
+      line-height: 1.5;
+    }
+
+    .guidance[data-tone="green"] {
+      background: var(--moss-soft);
+      color: oklch(31% 0.06 154);
+    }
+
+    .guidance[data-tone="violet"] {
+      background: var(--violet-soft);
+      color: oklch(35% 0.075 304);
+    }
+
+    .guidance[data-tone="amber"] {
+      background: var(--amber-soft);
+      color: oklch(37% 0.07 55);
+    }
+
+    .prompt-line {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .prompt-line input {
+      min-height: 44px;
+    }
+
+    .mini-log {
+      display: grid;
+      gap: 9px;
+      max-height: 330px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .log-item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: oklch(98% 0.008 108);
+    }
+
+    .log-item time {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--faint);
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .log-item p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.42;
+    }
+
+    @media (max-width: 860px) {
+      .intro,
+      .workspace,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .compass-caption {
+        position: static;
+        padding: 0 18px 16px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .shell {
+        width: min(100% - 22px, 1180px);
+        padding-top: 16px;
+      }
+
+      .topbar,
+      .section-head,
+      .prompt-line {
+        align-items: stretch;
+        flex-direction: column;
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 1.82rem;
+      }
+
+      .saved-status {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="topbar" aria-label="Garden navigation">
+      <a class="garden-link" href="../../../viewer/">Back to garden</a>
+      <div class="saved-status" id="savedStatus">Not saved yet</div>
+    </nav>
+
+    <section class="intro" aria-labelledby="title">
+      <div>
+        <h1 id="title">Values Compass</h1>
+        <p class="lede">A small place to keep the values that should survive panic, decisions, and mood. Name what matters once, then let it guide today's next move.</p>
+      </div>
+      <aside class="compass-panel" aria-label="Compass illustration">
+        <svg viewBox="0 0 520 244" role="img" aria-labelledby="compassTitle compassDesc">
+          <title id="compassTitle">A compass made from saved values</title>
+          <desc id="compassDesc">Concentric circles with a pointer aimed at the currently selected value.</desc>
+          <defs>
+            <linearGradient id="needle" x1="0" x2="1" y1="0" y2="1">
+              <stop stop-color="oklch(47% 0.082 304)" offset="0"></stop>
+              <stop stop-color="oklch(42% 0.079 154)" offset="1"></stop>
+            </linearGradient>
+          </defs>
+          <rect width="520" height="244" fill="oklch(96% 0.011 108)"></rect>
+          <g transform="translate(154 122)">
+            <circle r="88" fill="oklch(98% 0.008 108)" stroke="oklch(78% 0.034 196)" stroke-width="2"></circle>
+            <circle r="62" fill="none" stroke="oklch(84% 0.028 304)" stroke-width="1.5"></circle>
+            <circle r="33" fill="oklch(92% 0.035 154)" stroke="oklch(64% 0.062 154)" stroke-width="1.5"></circle>
+            <path id="needleShape" d="M0 -77 L16 3 L0 21 L-16 3 Z" fill="url(#needle)"></path>
+            <circle r="7" fill="oklch(28% 0.04 278)"></circle>
+            <g stroke="oklch(52% 0.036 278)" stroke-width="2" stroke-linecap="round">
+              <path d="M0 -101v14"></path>
+              <path d="M0 101v-14"></path>
+              <path d="M-101 0h14"></path>
+              <path d="M101 0H87"></path>
+            </g>
+          </g>
+          <g fill="oklch(38% 0.04 278)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif" font-size="13" font-weight="750">
+            <text x="146" y="24">N</text>
+            <text x="146" y="227">S</text>
+            <text x="39" y="127">W</text>
+            <text x="250" y="127">E</text>
+          </g>
+          <g transform="translate(296 56)">
+            <text x="0" y="0" fill="oklch(48% 0.032 278)" font-size="13" font-weight="750">CURRENT BEARING</text>
+            <text id="bearingLabel" x="0" y="32" fill="oklch(27% 0.052 154)" font-size="28" font-weight="800">Steady</text>
+            <text x="0" y="63" fill="oklch(48% 0.032 278)" font-size="14">Choose from values, not panic.</text>
+            <path d="M0 96H168" stroke="oklch(78% 0.034 196)" stroke-width="1.5"></path>
+            <text x="0" y="126" fill="oklch(47% 0.082 304)" font-size="14" font-weight="750">What matters can be reused.</text>
+          </g>
+        </svg>
+        <div class="compass-caption">The needle follows the value selected for the decision in front of you.</div>
+      </aside>
+    </section>
+
+    <section class="workspace">
+      <div class="surface panel-pad" aria-labelledby="valuesTitle">
+        <div class="section-head">
+          <div>
+            <h2 id="valuesTitle">Values</h2>
+            <p class="subtle">Keep the short version you can return to under pressure.</p>
+          </div>
+          <button class="secondary" id="seedExamples" type="button">Use starters</button>
+        </div>
+
+        <form id="valueForm" autocomplete="off">
+          <div class="form-grid">
+            <label>
+              Value
+              <input id="valueName" required maxlength="32" placeholder="Care">
+            </label>
+            <label>
+              How it leads
+              <textarea id="valueBehavior" required maxlength="220" placeholder="I lead with care by noticing what people need, including myself, before I rush to optimize."></textarea>
+            </label>
+          </div>
+          <div class="actions">
+            <button class="primary" type="submit">Save value</button>
+            <button class="secondary" id="clearValues" type="button">Clear all</button>
+          </div>
+        </form>
+
+        <div class="value-list" id="valueList" aria-live="polite"></div>
+      </div>
+
+      <div class="stack">
+        <section class="surface panel-pad" aria-labelledby="decisionTitle">
+          <div class="section-head">
+            <div>
+              <h2 id="decisionTitle">Today's Decision</h2>
+              <p class="subtle">Let one value translate the next choice into behavior.</p>
+            </div>
+          </div>
+
+          <label>
+            Decision or question
+            <textarea id="decisionText" maxlength="240" placeholder="What am I deciding today?"></textarea>
+          </label>
+
+          <div class="prompt-line">
+            <label>
+              Guiding value
+              <select id="guidingValue"></select>
+            </label>
+            <button class="primary" id="makeGuidance" type="button">Find bearing</button>
+          </div>
+
+          <div class="decision-output" id="decisionOutput" aria-live="polite"></div>
+        </section>
+
+        <section class="surface panel-pad" aria-labelledby="dailyTitle">
+          <div class="section-head">
+            <div>
+              <h2 id="dailyTitle">Daily Reminder</h2>
+              <p class="subtle">One reusable sentence for the day.</p>
+            </div>
+          </div>
+
+          <div class="guidance" data-tone="amber" id="dailyPrompt"></div>
+          <div class="actions">
+            <button class="secondary" id="newPrompt" type="button">Refresh sentence</button>
+            <button class="primary" id="saveSnapshot" type="button">Save snapshot</button>
+          </div>
+        </section>
+
+        <section class="surface panel-pad" aria-labelledby="logTitle">
+          <div class="section-head">
+            <div>
+              <h2 id="logTitle">Compass Log</h2>
+              <p class="subtle">Recent moments when a value helped decide.</p>
+            </div>
+          </div>
+          <div class="mini-log" id="snapshotLog"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "values-compass-v1";
+    const starters = [
+      {
+        name: "Care",
+        behavior: "I lead with care by noticing what people need, including myself, before I rush to optimize."
+      },
+      {
+        name: "Courage",
+        behavior: "I lead with courage by choosing the honest next step instead of reopening every possible path."
+      },
+      {
+        name: "Warmth",
+        behavior: "I lead with warmth by making steadiness visible in my words, tone, and follow-through."
+      }
+    ];
+    const promptTemplates = [
+      "Today, let {value} mean one small action you can actually repeat.",
+      "When the decision starts expanding, come back to {value} and choose the next honest behavior.",
+      "You do not have to rebuild your whole worldview today. Let {value} carry this one choice.",
+      "A steady life is made from small returns. Return to {value} once before reacting."
+    ];
+
+    const state = loadState();
+    const els = {
+      savedStatus: document.querySelector("#savedStatus"),
+      valueForm: document.querySelector("#valueForm"),
+      valueName: document.querySelector("#valueName"),
+      valueBehavior: document.querySelector("#valueBehavior"),
+      valueList: document.querySelector("#valueList"),
+      guidingValue: document.querySelector("#guidingValue"),
+      decisionText: document.querySelector("#decisionText"),
+      makeGuidance: document.querySelector("#makeGuidance"),
+      decisionOutput: document.querySelector("#decisionOutput"),
+      dailyPrompt: document.querySelector("#dailyPrompt"),
+      newPrompt: document.querySelector("#newPrompt"),
+      saveSnapshot: document.querySelector("#saveSnapshot"),
+      snapshotLog: document.querySelector("#snapshotLog"),
+      seedExamples: document.querySelector("#seedExamples"),
+      clearValues: document.querySelector("#clearValues"),
+      needleShape: document.querySelector("#needleShape"),
+      bearingLabel: document.querySelector("#bearingLabel")
+    };
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (saved && Array.isArray(saved.values)) return saved;
+      } catch (error) {
+        console.warn("Could not load Values Compass state", error);
+      }
+      return { values: [], snapshots: [], promptIndex: 0, selectedValue: "" };
+    }
+
+    function persist() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      const now = new Date();
+      els.savedStatus.textContent = `Saved ${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+    }
+
+    function renderValues() {
+      els.valueList.innerHTML = "";
+      els.guidingValue.innerHTML = "";
+
+      if (!state.values.length) {
+        els.valueList.innerHTML = '<div class="empty">No values saved yet. Add one value, or start with the three suggested anchors.</div>';
+        els.guidingValue.innerHTML = '<option value="">Add a value first</option>';
+        updateCompass("");
+        return;
+      }
+
+      state.values.forEach((value, index) => {
+        const option = document.createElement("option");
+        option.value = value.name;
+        option.textContent = value.name;
+        els.guidingValue.append(option);
+
+        const card = document.createElement("article");
+        card.className = "value-card";
+        card.innerHTML = `
+          <header>
+            <div>
+              <h3>${escapeHtml(value.name)}</h3>
+              <span class="tag">value ${index + 1}</span>
+            </div>
+            <button class="remove" type="button" aria-label="Remove ${escapeHtml(value.name)}" data-remove="${index}">x</button>
+          </header>
+          <p>${escapeHtml(value.behavior)}</p>
+        `;
+        els.valueList.append(card);
+      });
+
+      if (state.selectedValue && state.values.some((value) => value.name === state.selectedValue)) {
+        els.guidingValue.value = state.selectedValue;
+      }
+      updateCompass(els.guidingValue.value);
+    }
+
+    function renderPrompt() {
+      const value = els.guidingValue.value || state.values[0]?.name || "steadiness";
+      const template = promptTemplates[state.promptIndex % promptTemplates.length];
+      els.dailyPrompt.textContent = template.replace("{value}", value.toLowerCase());
+    }
+
+    function renderLog() {
+      els.snapshotLog.innerHTML = "";
+      if (!state.snapshots.length) {
+        els.snapshotLog.innerHTML = '<div class="empty">Saved snapshots will appear here.</div>';
+        return;
+      }
+
+      state.snapshots.slice(0, 8).forEach((snapshot) => {
+        const item = document.createElement("article");
+        item.className = "log-item";
+        item.innerHTML = `
+          <time>${escapeHtml(snapshot.date)}</time>
+          <p><strong>${escapeHtml(snapshot.value)}</strong>: ${escapeHtml(snapshot.text)}</p>
+        `;
+        els.snapshotLog.append(item);
+      });
+    }
+
+    function updateCompass(valueName) {
+      const index = state.values.findIndex((value) => value.name === valueName);
+      const angle = index < 0 ? 0 : index * 53 + 22;
+      els.needleShape.style.transformOrigin = "0 0";
+      els.needleShape.style.transform = `rotate(${angle}deg)`;
+      els.bearingLabel.textContent = valueName || "Steady";
+    }
+
+    function makeGuidance() {
+      const value = state.values.find((item) => item.name === els.guidingValue.value);
+      if (!value) {
+        els.decisionOutput.innerHTML = '<div class="guidance" data-tone="violet">Add one value first, then this can translate the decision into behavior.</div>';
+        return;
+      }
+
+      state.selectedValue = value.name;
+      const decision = els.decisionText.value.trim();
+      const decisionLine = decision || "this choice";
+      els.decisionOutput.innerHTML = `
+        <div class="guidance" data-tone="green">
+          For ${escapeHtml(decisionLine)}, let <strong>${escapeHtml(value.name)}</strong> mean this: ${escapeHtml(value.behavior)}
+        </div>
+        <div class="guidance" data-tone="violet">
+          The next steady move is the smallest visible behavior that proves this value still matters.
+        </div>
+      `;
+      updateCompass(value.name);
+      renderPrompt();
+      persist();
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    els.valueForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const name = els.valueName.value.trim();
+      const behavior = els.valueBehavior.value.trim();
+      if (!name || !behavior) return;
+
+      const existing = state.values.findIndex((value) => value.name.toLowerCase() === name.toLowerCase());
+      const value = { name, behavior };
+      if (existing >= 0) {
+        state.values[existing] = value;
+      } else {
+        state.values.push(value);
+      }
+      els.valueForm.reset();
+      renderValues();
+      renderPrompt();
+      persist();
+    });
+
+    els.valueList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-remove]");
+      if (!button) return;
+      state.values.splice(Number(button.dataset.remove), 1);
+      if (!state.values.some((value) => value.name === state.selectedValue)) {
+        state.selectedValue = state.values[0]?.name || "";
+      }
+      renderValues();
+      renderPrompt();
+      persist();
+    });
+
+    els.guidingValue.addEventListener("change", () => {
+      state.selectedValue = els.guidingValue.value;
+      updateCompass(state.selectedValue);
+      renderPrompt();
+      persist();
+    });
+
+    els.makeGuidance.addEventListener("click", makeGuidance);
+
+    els.newPrompt.addEventListener("click", () => {
+      state.promptIndex += 1;
+      renderPrompt();
+      persist();
+    });
+
+    els.saveSnapshot.addEventListener("click", () => {
+      const value = els.guidingValue.value || state.values[0]?.name || "Steadiness";
+      const text = els.decisionText.value.trim() || els.dailyPrompt.textContent;
+      state.snapshots.unshift({
+        date: new Date().toLocaleString([], { dateStyle: "medium", timeStyle: "short" }),
+        value,
+        text
+      });
+      state.snapshots = state.snapshots.slice(0, 20);
+      renderLog();
+      persist();
+    });
+
+    els.seedExamples.addEventListener("click", () => {
+      const known = new Set(state.values.map((value) => value.name.toLowerCase()));
+      starters.forEach((starter) => {
+        if (!known.has(starter.name.toLowerCase())) state.values.push(starter);
+      });
+      renderValues();
+      renderPrompt();
+      persist();
+    });
+
+    els.clearValues.addEventListener("click", () => {
+      if (!state.values.length) return;
+      const confirmed = confirm("Clear saved values from this browser?");
+      if (!confirmed) return;
+      state.values = [];
+      state.selectedValue = "";
+      renderValues();
+      renderPrompt();
+      persist();
+    });
+
+    renderValues();
+    renderPrompt();
+    renderLog();
+  </script>
+</body>
+</html>
