@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sunlight For The Browser</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: oklch(21% 0.025 255);
+      --muted: oklch(45% 0.033 250);
+      --soft: oklch(65% 0.04 235);
+      --paper: oklch(98% 0.014 96);
+      --panel: oklch(94% 0.02 98);
+      --line: oklch(80% 0.032 94);
+      --sun: oklch(79% 0.16 73);
+      --sky: oklch(86% 0.055 220);
+      --leaf: oklch(52% 0.11 145);
+      --rose: oklch(63% 0.11 24);
+      --focus: 0 0 0 3px oklch(75% 0.13 72 / 0.42);
+      --shadow-x: -18px;
+      --shadow-y: 24px;
+      --shadow-blur: 38px;
+      --shadow-alpha: 0.18;
+      --sun-angle: 38deg;
+      --sun-height: 52%;
+      --day-wash: 0.72;
+      --warmth: 0.18;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background:
+        linear-gradient(180deg, oklch(91% 0.06 218), oklch(97% 0.02 98) 54%, oklch(88% 0.038 130));
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(var(--sun-angle), oklch(100% 0.03 90 / var(--day-wash)), transparent 44%),
+        linear-gradient(180deg, oklch(91% 0.06 218), oklch(97% 0.018 95) 58%, oklch(87% 0.042 136));
+      transition: background 700ms ease, color 700ms ease;
+    }
+
+    body.night {
+      --ink: oklch(92% 0.016 245);
+      --muted: oklch(72% 0.035 240);
+      --paper: oklch(22% 0.035 252);
+      --panel: oklch(26% 0.035 250);
+      --line: oklch(39% 0.04 246);
+      background:
+        linear-gradient(var(--sun-angle), oklch(41% 0.06 274 / 0.32), transparent 48%),
+        linear-gradient(180deg, oklch(18% 0.06 265), oklch(25% 0.05 248) 58%, oklch(20% 0.05 182));
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible {
+      outline: none;
+      box-shadow: var(--focus);
+    }
+
+    .shell {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 20px 0 36px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .garden-link,
+    .small-link {
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .garden-link:hover,
+    .small-link:hover {
+      color: var(--ink);
+    }
+
+    .clock {
+      min-width: 10.5rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 14px;
+      background: oklch(99% 0.012 96 / 0.7);
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 750;
+      text-align: center;
+      box-shadow: 0 12px 36px oklch(30% 0.04 240 / 0.08);
+    }
+
+    body.night .clock {
+      background: oklch(28% 0.035 250 / 0.72);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(340px, 1.1fr);
+      align-items: center;
+      gap: 28px;
+      min-height: min(680px, calc(100vh - 78px));
+      padding-bottom: 28px;
+    }
+
+    .titleblock {
+      padding: 20px 0;
+    }
+
+    h1 {
+      max-width: 11ch;
+      margin: 0 0 16px;
+      color: oklch(24% 0.055 250);
+      font-size: clamp(2.8rem, 8vw, 6.8rem);
+      line-height: 0.92;
+      letter-spacing: 0;
+    }
+
+    body.night h1 {
+      color: oklch(96% 0.018 235);
+    }
+
+    .subtitle {
+      max-width: 38rem;
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .button,
+    .bookmarklet {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--paper);
+      color: var(--ink);
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow:
+        var(--shadow-x) var(--shadow-y) var(--shadow-blur) oklch(20% 0.04 250 / var(--shadow-alpha)),
+        inset 0 1px 0 oklch(100% 0 0 / 0.7);
+      transition: transform 180ms ease, box-shadow 500ms ease, background 500ms ease;
+    }
+
+    .button:hover,
+    .bookmarklet:hover {
+      transform: translateY(-1px);
+    }
+
+    .button.primary {
+      border-color: oklch(66% 0.14 72);
+      background: linear-gradient(180deg, oklch(88% 0.13 78), oklch(75% 0.14 68));
+      color: oklch(21% 0.04 58);
+    }
+
+    .sky-lab {
+      position: relative;
+      min-height: 520px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, oklch(92% 0.055 220 / 0.95), oklch(98% 0.02 95 / 0.9) 56%, oklch(88% 0.055 140 / 0.95)),
+        repeating-linear-gradient(90deg, oklch(30% 0.03 240 / 0.05) 0 1px, transparent 1px 64px);
+      box-shadow: 0 28px 90px oklch(24% 0.045 240 / 0.2);
+    }
+
+    body.night .sky-lab {
+      background:
+        linear-gradient(180deg, oklch(20% 0.065 262), oklch(29% 0.047 236) 57%, oklch(20% 0.052 180)),
+        repeating-linear-gradient(90deg, oklch(95% 0.02 240 / 0.04) 0 1px, transparent 1px 64px);
+    }
+
+    .sun {
+      position: absolute;
+      top: calc(82% - var(--sun-height));
+      left: calc(50% + (var(--sun-track, 0) * 1%));
+      width: 72px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: radial-gradient(circle at 34% 30%, oklch(99% 0.03 93), var(--sun));
+      box-shadow: 0 0 70px oklch(87% 0.16 76 / 0.75);
+      transform: translate(-50%, -50%);
+      transition: top 700ms ease, left 700ms ease, opacity 700ms ease;
+    }
+
+    body.night .sun {
+      opacity: 0.25;
+      background: oklch(72% 0.04 255);
+      box-shadow: 0 0 54px oklch(74% 0.05 255 / 0.4);
+    }
+
+    .ground {
+      position: absolute;
+      inset: auto 0 0;
+      height: 35%;
+      background:
+        linear-gradient(180deg, transparent, oklch(77% 0.08 135 / 0.68)),
+        repeating-linear-gradient(92deg, oklch(39% 0.075 146 / 0.24) 0 1px, transparent 1px 18px);
+    }
+
+    .browser-frame {
+      position: absolute;
+      inset: 86px 34px 74px;
+      display: grid;
+      grid-template-rows: 46px 1fr;
+      border: 1px solid oklch(75% 0.035 230);
+      border-radius: 8px;
+      overflow: hidden;
+      background: oklch(97% 0.015 92 / 0.9);
+      transform: perspective(1100px) rotateX(2deg) rotateY(-4deg);
+      box-shadow:
+        var(--shadow-x) var(--shadow-y) var(--shadow-blur) oklch(18% 0.04 250 / calc(var(--shadow-alpha) + 0.08)),
+        inset 0 1px 0 oklch(100% 0 0 / 0.7);
+      transition: box-shadow 700ms ease, background 700ms ease;
+    }
+
+    body.night .browser-frame {
+      background: oklch(27% 0.035 250 / 0.92);
+      border-color: oklch(43% 0.035 245);
+    }
+
+    .chrome {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--line);
+      background: oklch(94% 0.018 96 / 0.92);
+    }
+
+    body.night .chrome {
+      background: oklch(24% 0.036 252 / 0.9);
+    }
+
+    .dot {
+      width: 10px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--rose);
+    }
+
+    .dot:nth-child(2) {
+      background: var(--sun);
+    }
+
+    .dot:nth-child(3) {
+      background: var(--leaf);
+    }
+
+    .address {
+      flex: 1;
+      min-width: 0;
+      height: 24px;
+      margin-left: 8px;
+      border-radius: 999px;
+      background: oklch(99% 0.01 96 / 0.8);
+    }
+
+    body.night .address {
+      background: oklch(34% 0.03 245);
+    }
+
+    .page {
+      display: grid;
+      grid-template-columns: minmax(120px, 0.42fr) minmax(0, 1fr);
+      gap: 18px;
+      padding: 22px;
+      background:
+        linear-gradient(120deg, oklch(100% 0.02 92 / calc(0.24 + var(--warmth))), transparent 52%),
+        var(--paper);
+    }
+
+    body.night .page {
+      background: var(--paper);
+    }
+
+    .rail,
+    .story,
+    .tile,
+    .pill {
+      box-shadow:
+        var(--shadow-x) var(--shadow-y) var(--shadow-blur) oklch(18% 0.04 250 / var(--shadow-alpha)),
+        inset 0 1px 0 oklch(100% 0 0 / 0.65);
+      transition: box-shadow 700ms ease, background 700ms ease, transform 220ms ease;
+    }
+
+    .rail {
+      min-height: 230px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: oklch(96% 0.018 92);
+    }
+
+    body.night .rail {
+      background: oklch(31% 0.035 250);
+    }
+
+    .story {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      background: oklch(99% 0.012 95);
+    }
+
+    body.night .story {
+      background: oklch(30% 0.035 250);
+    }
+
+    .story-line {
+      height: 12px;
+      margin-bottom: 11px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--muted), transparent);
+      opacity: 0.45;
+    }
+
+    .story-line.short {
+      width: 62%;
+    }
+
+    .tiles {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .tile {
+      min-height: 76px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: oklch(94% 0.028 94);
+    }
+
+    body.night .tile {
+      background: oklch(36% 0.035 246);
+    }
+
+    .readout {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: -4px;
+    }
+
+    .meter {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: oklch(99% 0.012 96 / 0.72);
+      box-shadow: 0 14px 42px oklch(25% 0.04 245 / 0.09);
+    }
+
+    body.night .meter {
+      background: oklch(29% 0.035 250 / 0.8);
+    }
+
+    .meter span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .meter strong {
+      display: block;
+      margin-top: 6px;
+      color: var(--ink);
+      font-size: 1.22rem;
+      line-height: 1.1;
+    }
+
+    .lower {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 0.68fr);
+      gap: 18px;
+      align-items: start;
+      margin-top: 18px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      background: oklch(99% 0.012 96 / 0.74);
+      box-shadow: 0 20px 60px oklch(22% 0.04 245 / 0.12);
+    }
+
+    body.night .panel {
+      background: oklch(28% 0.035 250 / 0.82);
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 1.12rem;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .bookmark-box {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 118px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.35;
+    }
+
+    .status {
+      min-height: 1.3em;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 650;
+    }
+
+    @media (max-width: 900px) {
+      .hero,
+      .lower {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: 0;
+      }
+
+      h1 {
+        max-width: 12ch;
+      }
+
+      .sky-lab {
+        min-height: 480px;
+      }
+
+      .readout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .shell {
+        width: min(100% - 22px, 1160px);
+        padding-top: 14px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .clock {
+        width: 100%;
+      }
+
+      .sky-lab {
+        min-height: 430px;
+      }
+
+      .browser-frame {
+        inset: 74px 14px 58px;
+        transform: none;
+      }
+
+      .page {
+        grid-template-columns: 1fr;
+        padding: 14px;
+      }
+
+      .rail {
+        min-height: 84px;
+      }
+
+      .readout {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        display: grid;
+      }
+
+      .button,
+      .bookmarklet {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="topbar" aria-label="Garden navigation">
+      <a class="garden-link" href="../../../viewer/">&larr; Garden</a>
+      <div class="clock" id="clock">Reading local sun</div>
+    </nav>
+
+    <section class="hero" aria-labelledby="title">
+      <div class="titleblock">
+        <h1 id="title">Sunlight For The Browser</h1>
+        <p class="subtitle">A page lit by the current day: morning throws long side shadows, noon pulls them under objects, evening warms and lengthens them again.</p>
+        <div class="actions">
+          <button class="button primary" id="locate" type="button">Use Local Horizon</button>
+          <a class="bookmarklet" id="bookmarklet" href="#">Sunlight Bookmarklet</a>
+        </div>
+      </div>
+
+      <div class="sky-lab" aria-label="A browser window casting time-based shadows">
+        <div class="sun" aria-hidden="true"></div>
+        <div class="ground" aria-hidden="true"></div>
+        <div class="browser-frame">
+          <div class="chrome">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="address"></span>
+          </div>
+          <div class="page">
+            <div class="rail"></div>
+            <div class="story">
+              <div class="story-line"></div>
+              <div class="story-line"></div>
+              <div class="story-line short"></div>
+              <div class="tiles">
+                <div class="tile"></div>
+                <div class="tile"></div>
+                <div class="tile"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="readout" aria-label="Sunlight readout">
+      <div class="meter">
+        <span>Phase</span>
+        <strong id="phase">Day</strong>
+      </div>
+      <div class="meter">
+        <span>Shadow</span>
+        <strong id="shadow">18 px</strong>
+      </div>
+      <div class="meter">
+        <span>Angle</span>
+        <strong id="angle">38 deg</strong>
+      </div>
+      <div class="meter">
+        <span>Source</span>
+        <strong id="source">Clock</strong>
+      </div>
+    </section>
+
+    <section class="lower">
+      <div class="panel">
+        <h2>Try It Elsewhere</h2>
+        <p>The bookmarklet carries the same small sunlight layer into another page. It uses the page's own clock and never calls a network service.</p>
+        <div class="bookmark-box">
+          <textarea id="code" readonly spellcheck="false"></textarea>
+          <button class="button" id="copy" type="button">Copy Bookmarklet</button>
+          <div class="status" id="status"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Current Bearing</h2>
+        <p id="bearing">The browser is waiting for the first shadow.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const root = document.documentElement;
+    const clock = document.getElementById("clock");
+    const phaseEl = document.getElementById("phase");
+    const shadowEl = document.getElementById("shadow");
+    const angleEl = document.getElementById("angle");
+    const sourceEl = document.getElementById("source");
+    const bearingEl = document.getElementById("bearing");
+    const locateButton = document.getElementById("locate");
+    const bookmarkletLink = document.getElementById("bookmarklet");
+    const codeBox = document.getElementById("code");
+    const copyButton = document.getElementById("copy");
+    const statusEl = document.getElementById("status");
+
+    let place = null;
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function dayOfYear(date) {
+      const start = new Date(date.getFullYear(), 0, 0);
+      return Math.floor((date - start) / 86400000);
+    }
+
+    function daylightHours(date, latitude) {
+      const lat = clamp(latitude, -66, 66) * Math.PI / 180;
+      const declination = 23.44 * Math.PI / 180 * Math.sin((2 * Math.PI / 365) * (dayOfYear(date) - 81));
+      const hourAngle = Math.acos(clamp(-Math.tan(lat) * Math.tan(declination), -1, 1));
+      return 24 * hourAngle / Math.PI;
+    }
+
+    function sunlight(date, coords) {
+      const minutes = date.getHours() * 60 + date.getMinutes() + date.getSeconds() / 60;
+      const lat = coords ? coords.latitude : 45;
+      const dayLength = daylightHours(date, lat);
+      const solarNoon = 12 * 60;
+      const sunrise = solarNoon - dayLength * 30;
+      const sunset = solarNoon + dayLength * 30;
+      const progress = clamp((minutes - sunrise) / Math.max(1, sunset - sunrise), 0, 1);
+      const isNight = minutes < sunrise || minutes > sunset;
+      const elevation = isNight ? 0 : Math.sin(progress * Math.PI);
+      const side = (progress - 0.5) * 2;
+      const length = isNight ? 12 : 42 - elevation * 31;
+      const x = -side * length;
+      const y = 12 + (1 - elevation) * 22;
+      const angle = 90 + side * 72;
+      const warmth = isNight ? 0 : Math.pow(Math.abs(side), 1.8) * 0.42 + 0.08;
+      const phase = isNight ? "Night" : progress < 0.18 ? "Morning" : progress > 0.82 ? "Evening" : elevation > 0.82 ? "Noon" : "Day";
+
+      return {
+        x,
+        y,
+        blur: isNight ? 24 : 18 + (1 - elevation) * 34,
+        alpha: isNight ? 0.22 : 0.1 + (1 - elevation) * 0.18,
+        angle,
+        sunTrack: side * 38,
+        sunHeight: isNight ? 8 : 18 + elevation * 64,
+        wash: isNight ? 0.12 : 0.5 + elevation * 0.42,
+        warmth,
+        phase,
+        length: Math.round(Math.hypot(x, y))
+      };
+    }
+
+    function bearing(model) {
+      if (model.phase === "Night") return "Objects hold close shadows now; the page quiets down instead of pretending it is noon.";
+      if (model.phase === "Morning") return "Light is arriving from the side. The web feels newly lifted, with long shadows that make the morning visible.";
+      if (model.phase === "Noon") return "The sun is high. Shadows tuck under the interface and the page becomes flatter, brighter, and more direct.";
+      if (model.phase === "Evening") return "The day is leaning away. Shadows lengthen and warm, making time harder to ignore.";
+      return "The current hour is giving the page a physical direction.";
+    }
+
+    function paint() {
+      const now = new Date();
+      const model = sunlight(now, place);
+      root.style.setProperty("--shadow-x", model.x.toFixed(1) + "px");
+      root.style.setProperty("--shadow-y", model.y.toFixed(1) + "px");
+      root.style.setProperty("--shadow-blur", model.blur.toFixed(1) + "px");
+      root.style.setProperty("--shadow-alpha", model.alpha.toFixed(3));
+      root.style.setProperty("--sun-angle", model.angle.toFixed(1) + "deg");
+      root.style.setProperty("--sun-track", model.sunTrack.toFixed(1));
+      root.style.setProperty("--sun-height", model.sunHeight.toFixed(1) + "%");
+      root.style.setProperty("--day-wash", model.wash.toFixed(2));
+      root.style.setProperty("--warmth", model.warmth.toFixed(2));
+      document.body.classList.toggle("night", model.phase === "Night");
+
+      clock.textContent = new Intl.DateTimeFormat([], {
+        hour: "numeric",
+        minute: "2-digit",
+        weekday: "short"
+      }).format(now);
+      phaseEl.textContent = model.phase;
+      shadowEl.textContent = model.length + " px";
+      angleEl.textContent = Math.round(model.angle) + " deg";
+      sourceEl.textContent = place ? "Horizon" : "Clock";
+      bearingEl.textContent = bearing(model);
+    }
+
+    const bookmarklet = "javascript:(()=>{const d=document,id='sunlight-for-browser-style';function c(v,a,b){return Math.min(b,Math.max(a,v))}function m(){const n=new Date,t=n.getHours()*60+n.getMinutes(),p=c((t-360)/840,0,1),night=t<360||t>1200,e=night?0:Math.sin(p*Math.PI),s=(p-.5)*2,l=night?12:42-e*31,x=-s*l,y=12+(1-e)*22,b=night?24:18+(1-e)*34,a=night?.2:.1+(1-e)*.18;return{x,y,b,a}}function run(){const v=m();let s=d.getElementById(id);if(!s){s=d.createElement('style');s.id=id;d.head.appendChild(s)}s.textContent='article,section,main,nav,aside,header,footer,button,input,textarea,select,img,video,canvas,[class*=card],[class*=panel],[class*=tile]{box-shadow:'+v.x.toFixed(1)+'px '+v.y.toFixed(1)+'px '+v.b.toFixed(1)+'px rgba(24,31,45,'+v.a.toFixed(3)+')!important;transition:box-shadow .7s ease!important}'}run();setInterval(run,60000)})();";
+
+    bookmarkletLink.href = bookmarklet;
+    codeBox.value = bookmarklet;
+
+    locateButton.addEventListener("click", () => {
+      statusEl.textContent = "";
+      if (!navigator.geolocation) {
+        sourceEl.textContent = "Clock";
+        statusEl.textContent = "This browser did not offer location, so the clock model stayed active.";
+        return;
+      }
+      locateButton.disabled = true;
+      locateButton.textContent = "Finding Horizon";
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          place = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          };
+          locateButton.textContent = "Using Local Horizon";
+          paint();
+        },
+        () => {
+          locateButton.disabled = false;
+          locateButton.textContent = "Use Local Horizon";
+          statusEl.textContent = "Location stayed private; the clock model stayed active.";
+          paint();
+        },
+        { maximumAge: 3600000, timeout: 8000 }
+      );
+    });
+
+    copyButton.addEventListener("click", async () => {
+      codeBox.select();
+      try {
+        await navigator.clipboard.writeText(bookmarklet);
+        statusEl.textContent = "Bookmarklet copied.";
+      } catch (error) {
+        document.execCommand("copy");
+        statusEl.textContent = "Bookmarklet selected for copying.";
+      }
+    });
+
+    paint();
+    setInterval(paint, 60000);
+  </script>
+</body>
+</html>
