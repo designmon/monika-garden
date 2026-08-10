@@ -80,6 +80,20 @@
       "planted": "2026-08-10",
       "last_tended": null,
       "note": "freshly planted"
+    },
+    "c4": {
+      "stage": 1,
+      "title": "Matchstick Release",
+      "planted": "2026-08-10",
+      "last_tended": null,
+      "note": "freshly planted"
+    },
+    "d1": {
+      "stage": 1,
+      "title": "Why It Is This Way",
+      "planted": "2026-08-10",
+      "last_tended": null,
+      "note": "freshly planted"
     }
   }
 }
