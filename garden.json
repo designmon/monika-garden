@@ -35,11 +35,12 @@
       "door": "plots/a4/growth/index.html"
     },
     "b1": {
-      "stage": 1,
+      "stage": 3,
       "title": "Interesting Takes Engine",
       "planted": "2026-08-10",
-      "last_tended": null,
-      "note": "freshly planted"
+      "last_tended": "2026-08-10T17:42:34Z",
+      "note": "take kiln now learns a local voice shelf",
+      "door": "plots/b1/growth/index.html"
     },
     "b2": {
       "stage": 1,
