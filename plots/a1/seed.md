@@ -4,6 +4,8 @@ I want something that reminds me every day to say something nice to myself. Not 
 
 The important part is training a reframe. I want to color the way I see the world by practicing, in small repeated doses, how to catch the harsh first thought and give it another possible meaning. It should feel intimate and calm, like a daily note that helps me build a new reflex.
 
+Very important product direction: this should be minimalist and require almost no input from me. I do not want a complex worksheet or a lot of fields. It should propose things to me first and foremost: a likely pattern, a gentle reframe, a best-case thought, maybe a tiny next action. My role should be more like choosing or nudging: one quick option, one tap, one short phrase if needed. The tool should feel like it meets me where I am, not like it asks me to do a lot of cognitive work before helping.
+
 One of my biggest patterns is overthinking. I do not necessarily want to kill that part of me; I want to twist it completely. If my mind can build elaborate worst-case futures, I want help making it build elaborate best-possible futures too. Let me overthink the good version with the same vividness I usually give to fear.
 
 Some of the fears that need reframing: that my relationship will end like my parents' relationship, that I will not be respected by others, that I will be alone because nobody will want to be with me, that I will not develop the top skills I need at work or stay ahead of the curve and will become irrelevant, that nobody will care about me as a friend, and that work leadership will decide who gets opportunities in ways I cannot influence.
@@ -24,4 +26,4 @@ Maybe it should actively help me find balance and nuance: if my mind offers two 
 
 ## Bloom looks like
 
-A daily experience I can return to: one thought, one named pattern, one value, one complexity-restoring reframe, one tiny act of self-kindness, and one best-possible future worth rehearsing. Over time it should become a visual map of my patterns and the paths that help me steer toward the life I want.
+A daily experience I can return to that feels almost effortless: it proposes a likely pattern, one value, one complexity-restoring reframe, one tiny act of self-kindness, and one best-possible future worth rehearsing. I should mostly select, accept, or lightly adjust. Over time it should become a visual map of my patterns and the paths that help me steer toward the life I want.
