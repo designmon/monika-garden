@@ -94,6 +94,13 @@
       "planted": "2026-08-10",
       "last_tended": null,
       "note": "freshly planted"
+    },
+    "d2": {
+      "stage": 1,
+      "title": "Web Greetings Layer",
+      "planted": "2026-08-10",
+      "last_tended": null,
+      "note": "freshly planted"
     }
   }
 }
