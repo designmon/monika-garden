@@ -43,11 +43,12 @@
       "door": "plots/b1/growth/index.html"
     },
     "b2": {
-      "stage": 1,
+      "stage": 3,
       "title": "Daily Brightness",
       "planted": "2026-08-10",
-      "last_tended": null,
-      "note": "freshly planted"
+      "last_tended": "2026-08-11T06:20:42Z",
+      "note": "brightness ritual safely turns inward wishes outward",
+      "door": "plots/b2/growth/index.html"
     },
     "b3": {
       "stage": 1,

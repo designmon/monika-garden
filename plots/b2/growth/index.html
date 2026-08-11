@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Brightness</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: oklch(24% 0.028 244);
+      --muted: oklch(46% 0.035 232);
+      --paper: oklch(98% 0.012 98);
+      --wash: oklch(93% 0.037 119);
+      --blue: oklch(62% 0.118 226);
+      --leaf: oklch(65% 0.121 151);
+      --sun: oklch(78% 0.16 82);
+      --rose: oklch(67% 0.135 24);
+      --line: oklch(82% 0.032 106);
+      --shadow: 0 18px 60px oklch(31% 0.05 106 / 0.16);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 12% 12%, oklch(84% 0.13 83 / 0.58), transparent 28rem),
+        linear-gradient(145deg, oklch(98% 0.012 98), oklch(91% 0.04 154));
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(18rem, 0.85fr) minmax(22rem, 1.15fr);
+      gap: 0;
+    }
+
+    .window {
+      position: relative;
+      min-height: 100vh;
+      padding: 2rem;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-right: 1px solid var(--line);
+    }
+
+    .window::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent 47%, oklch(34% 0.05 130 / 0.18) 48% 52%, transparent 53%),
+        linear-gradient(0deg, transparent 47%, oklch(34% 0.05 130 / 0.18) 48% 52%, transparent 53%);
+      mask-image: radial-gradient(circle at 50% 44%, black 0 40%, transparent 41%);
+      pointer-events: none;
+    }
+
+    .sunfield {
+      width: min(76vw, 25rem);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      position: relative;
+      background:
+        radial-gradient(circle at 38% 34%, oklch(99% 0.03 95) 0 9%, transparent 10%),
+        radial-gradient(circle at center, oklch(82% 0.17 83) 0 27%, oklch(73% 0.13 130) 28% 48%, oklch(58% 0.12 215) 49% 70%, transparent 71%);
+      box-shadow: var(--shadow);
+      animation: breathe 7s ease-in-out infinite;
+    }
+
+    .sunfield::before,
+    .sunfield::after {
+      content: "";
+      position: absolute;
+      inset: -7%;
+      border-radius: 50%;
+      background:
+        conic-gradient(from 8deg, transparent 0 7deg, oklch(78% 0.15 82 / 0.42) 8deg 13deg, transparent 14deg 30deg);
+      animation: turn 40s linear infinite;
+    }
+
+    .sunfield::after {
+      inset: 19%;
+      background:
+        linear-gradient(130deg, transparent 0 32%, oklch(98% 0.035 94 / 0.82) 33% 38%, transparent 39%),
+        linear-gradient(38deg, transparent 0 54%, oklch(97% 0.03 112 / 0.58) 55% 61%, transparent 62%);
+      animation: drift 9s ease-in-out infinite alternate;
+    }
+
+    .sil {
+      position: absolute;
+      left: 50%;
+      bottom: 13%;
+      width: 34%;
+      height: 38%;
+      transform: translateX(-50%);
+      border-radius: 45% 45% 18% 18%;
+      background: oklch(27% 0.047 151 / 0.88);
+      box-shadow:
+        -4.8rem 1.6rem 0 -2rem oklch(32% 0.065 154 / 0.7),
+        4.8rem 1.6rem 0 -2rem oklch(32% 0.065 154 / 0.7);
+    }
+
+    .ritual {
+      padding: 3.2rem clamp(1.2rem, 5vw, 5rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .back {
+      align-self: flex-start;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.92rem;
+      margin-bottom: 3rem;
+    }
+
+    .back:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+      outline: 3px solid oklch(68% 0.14 226 / 0.55);
+      outline-offset: 3px;
+    }
+
+    h1 {
+      margin: 0 0 0.7rem;
+      font-size: 2.35rem;
+      line-height: 1.08;
+      letter-spacing: 0;
+      max-width: 12ch;
+    }
+
+    .date {
+      color: var(--muted);
+      font-size: 0.96rem;
+      margin-bottom: 2rem;
+    }
+
+    .sentence {
+      max-width: 44rem;
+      margin: 0 0 1.5rem;
+      font-size: 1.58rem;
+      line-height: 1.32;
+      font-weight: 680;
+    }
+
+    .sentence mark {
+      background: linear-gradient(180deg, transparent 48%, oklch(84% 0.13 83 / 0.55) 49%);
+      color: inherit;
+      padding: 0 0.08em;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin: 0 0 1.7rem;
+    }
+
+    .chip,
+    .primary,
+    .plain {
+      border: 1px solid var(--line);
+      min-height: 2.65rem;
+      border-radius: 999px;
+      padding: 0 1rem;
+      color: var(--ink);
+      background: oklch(99% 0.01 103 / 0.8);
+      cursor: pointer;
+      transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), background 180ms ease, border-color 180ms ease;
+    }
+
+    .chip:hover,
+    .plain:hover {
+      transform: translateY(-1px);
+      border-color: oklch(70% 0.07 151);
+      background: oklch(97% 0.025 121);
+    }
+
+    .chip[aria-pressed="true"] {
+      color: oklch(23% 0.045 151);
+      background: oklch(86% 0.09 145);
+      border-color: oklch(67% 0.12 151);
+    }
+
+    .primary {
+      background: var(--ink);
+      color: oklch(97% 0.012 98);
+      border-color: var(--ink);
+      font-weight: 690;
+    }
+
+    .primary:hover {
+      transform: translateY(-1px);
+      background: oklch(31% 0.05 244);
+    }
+
+    .prompt {
+      max-width: 39rem;
+      padding: 1rem 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      margin: 0 0 1.4rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .prompt strong {
+      display: block;
+      color: var(--ink);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.35rem;
+    }
+
+    .echo {
+      width: min(100%, 39rem);
+      margin: 0 0 1.2rem;
+      padding: 0.95rem 1rem;
+      border: 1px solid oklch(76% 0.055 151);
+      background: oklch(96% 0.026 142 / 0.74);
+    }
+
+    .echo strong {
+      display: block;
+      margin-bottom: 0.32rem;
+      color: oklch(31% 0.055 151);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .echo p {
+      margin: 0 0 0.75rem;
+      color: oklch(33% 0.035 232);
+      line-height: 1.45;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 1.7rem;
+    }
+
+    .name-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      align-items: center;
+      margin-bottom: 1.3rem;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    input {
+      width: min(100%, 17rem);
+      min-height: 2.65rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: oklch(99% 0.01 103 / 0.86);
+      color: var(--ink);
+      padding: 0 1rem;
+      font: inherit;
+    }
+
+    .reflection {
+      width: min(100%, 39rem);
+      margin: 0 0 1.35rem;
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .reflection-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .reflection input {
+      width: 100%;
+    }
+
+    .status {
+      min-height: 1.4rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .log {
+      width: min(100%, 38rem);
+      margin-top: 1.5rem;
+    }
+
+    .log h2 {
+      margin: 0 0 0.75rem;
+      font-size: 0.98rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .log-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .log-list li {
+      padding: 0.75rem 0;
+      border-top: 1px solid var(--line);
+      color: oklch(34% 0.035 232);
+      line-height: 1.45;
+    }
+
+    .empty {
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      padding-top: 0.75rem;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(0.985); }
+      50% { transform: scale(1.02); }
+    }
+
+    @keyframes turn {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes drift {
+      to { transform: translate(5%, -3%) rotate(7deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .window {
+        min-height: 15rem;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .sunfield {
+        width: min(70vw, 17rem);
+      }
+
+      .ritual {
+        min-height: auto;
+        padding: 1.5rem 1rem 2.2rem;
+      }
+
+      .back {
+        margin-bottom: 1.6rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .sentence {
+        font-size: 1.28rem;
+      }
+
+      .reflection-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="window" aria-hidden="true">
+      <div class="sunfield">
+        <div class="sil"></div>
+      </div>
+    </section>
+
+    <section class="ritual">
+      <a class="back" href="../../../viewer/">Back to the garden</a>
+      <h1>Daily Brightness</h1>
+      <div class="date" id="dateLabel"></div>
+
+      <p class="sentence" id="sentence"></p>
+
+      <div class="controls" aria-label="Choose who this sentence is for">
+        <button class="chip" type="button" data-audience="partner" aria-pressed="true">Partner</button>
+        <button class="chip" type="button" data-audience="work" aria-pressed="false">Work</button>
+        <button class="chip" type="button" data-audience="close" aria-pressed="false">Someone close</button>
+      </div>
+
+      <div class="name-row">
+        <label for="nameInput">Name, optional</label>
+        <input id="nameInput" type="text" autocomplete="off" maxlength="28" placeholder="Someone you want to see clearly">
+      </div>
+
+      <div class="prompt" id="prompt"></div>
+
+      <div class="echo" id="echoPanel" hidden>
+        <strong>Last saved warmth</strong>
+        <p id="echoText"></p>
+        <button class="plain" type="button" id="echoButton">Begin from this</button>
+      </div>
+
+      <div class="reflection">
+        <label for="wishInput">What did you wish someone noticed?</label>
+        <div class="reflection-row">
+          <input id="wishInput" type="text" autocomplete="off" maxlength="96" placeholder="the effort inside the unfinished part">
+          <button class="plain" type="button" id="reflectButton">Turn it outward</button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" type="button" id="speakButton">Spoken today</button>
+        <button class="plain" type="button" id="copyButton">Copy sentence</button>
+        <button class="plain" type="button" id="nudgeButton">Turn the light</button>
+      </div>
+
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+
+      <section class="log" aria-labelledby="logTitle">
+        <h2 id="logTitle">Recent warmth</h2>
+        <ul class="log-list" id="logList"></ul>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const phrases = {
+      partner: [
+        "I noticed how much <mark>care</mark> you put into the day, even the parts that stayed unfinished.",
+        "I am glad we are figuring this out together. The middle counts too.",
+        "I see the effort behind what you are carrying, and I do not want that to go invisible.",
+        "Thank you for staying with the process. I like building this life with you.",
+        "I know this is messy, and I am still on your side while we learn our way through it."
+      ],
+      work: [
+        "I noticed the thought you put into this, especially where the answer is still forming.",
+        "This is not finished yet, but the direction has care in it. I appreciate that.",
+        "Thank you for helping make the unclear part easier to understand.",
+        "I see the patience this took. The process is part of the work.",
+        "I appreciate the way you kept looking for a better version instead of forcing a quick one."
+      ],
+      close: [
+        "I noticed something good in you today, and I wanted to say it before the day moved on.",
+        "I appreciate the way you keep showing up, even when the path is not neat.",
+        "I see how much you are learning while you are living it.",
+        "The unfinished part does not make this less real. I am glad to be near you in it.",
+        "You made the day softer in a way that would have been easy to miss."
+      ]
+    };
+
+    const prompts = [
+      "Give the kind of noticing you wish someone would offer you.",
+      "Let warmth be specific. Name the effort, not only the result.",
+      "Practice loving the middle: repair, attempts, drafts, and shared learning.",
+      "Soften urgency without dropping the thread. Stay active, stay kind.",
+      "Say the generous thing while it can still land in the day."
+    ];
+
+    const storageKey = "daily-brightness-log";
+    const state = {
+      audience: "partner",
+      turn: Number(localStorage.getItem("daily-brightness-turn") || "0"),
+      reflected: localStorage.getItem("daily-brightness-reflected") || ""
+    };
+
+    const sentence = document.getElementById("sentence");
+    const prompt = document.getElementById("prompt");
+    const dateLabel = document.getElementById("dateLabel");
+    const status = document.getElementById("status");
+    const logList = document.getElementById("logList");
+    const nameInput = document.getElementById("nameInput");
+    const wishInput = document.getElementById("wishInput");
+    const echoPanel = document.getElementById("echoPanel");
+    const echoText = document.getElementById("echoText");
+    const chips = Array.from(document.querySelectorAll(".chip"));
+
+    const today = new Date();
+    const dayKey = today.toISOString().slice(0, 10);
+    const daySeed = Number(dayKey.replaceAll("-", ""));
+
+    dateLabel.textContent = today.toLocaleDateString(undefined, {
+      weekday: "long",
+      month: "long",
+      day: "numeric"
+    });
+
+    nameInput.value = localStorage.getItem("daily-brightness-name") || "";
+    wishInput.value = localStorage.getItem("daily-brightness-wish") || "";
+
+    function pick(list, offset = 0) {
+      return list[(daySeed + state.turn + offset) % list.length];
+    }
+
+    function clean(text) {
+      return text.trim().replace(/\s+/g, " ");
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      }[character]));
+    }
+
+    function currentSentence() {
+      if (state.reflected) return escapeHtml(state.reflected);
+      const name = clean(nameInput.value);
+      const raw = pick(phrases[state.audience]);
+      if (!name) return raw;
+      return `${escapeHtml(name)}, ${raw.charAt(0).toLowerCase()}${raw.slice(1)}`;
+    }
+
+    function cleanWish(text) {
+      return text
+        .trim()
+        .replace(/[.?!]+$/g, "")
+        .replace(/^i wish someone noticed\s+/i, "")
+        .replace(/^that\s+/i, "");
+    }
+
+    function reflectedSentence() {
+      const noticed = cleanWish(wishInput.value);
+      if (!noticed) return "";
+      const name = clean(nameInput.value);
+      const opener = name ? `${name}, I noticed` : "I noticed";
+      const endings = {
+        partner: "and I am glad we are in the middle of this together.",
+        work: "especially where the answer is still forming. I appreciate the care in it.",
+        close: "and I wanted to say it before the day moved on."
+      };
+      return `${opener} ${noticed}, ${endings[state.audience]}`;
+    }
+
+    function render() {
+      sentence.innerHTML = currentSentence();
+      prompt.innerHTML = `<strong>Today&apos;s practice</strong>${pick(prompts, state.audience.length)}`;
+      chips.forEach((chip) => {
+        chip.setAttribute("aria-pressed", String(chip.dataset.audience === state.audience));
+      });
+      renderEcho();
+      renderLog();
+    }
+
+    function readLog() {
+      try {
+        return JSON.parse(localStorage.getItem(storageKey) || "[]");
+      } catch {
+        return [];
+      }
+    }
+
+    function writeLog(log) {
+      localStorage.setItem(storageKey, JSON.stringify(log.slice(0, 7)));
+    }
+
+    function previousEntry() {
+      return readLog().find((entry) => entry.date !== dayKey) || null;
+    }
+
+    function warmthToWish(text) {
+      return text
+        .replace(/^([^,]{1,32},\s*)?I noticed\s+/i, "")
+        .replace(/^I see\s+/i, "")
+        .replace(/^I appreciate\s+/i, "")
+        .replace(/^Thank you for\s+/i, "")
+        .replace(/^I am glad\s+/i, "the way ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 96);
+    }
+
+    function renderEcho() {
+      const entry = previousEntry();
+      echoPanel.hidden = !entry;
+      if (!entry) return;
+      echoText.textContent = entry.text;
+    }
+
+    function renderLog() {
+      const log = readLog();
+      logList.innerHTML = "";
+      if (!log.length) {
+        const empty = document.createElement("li");
+        empty.className = "empty";
+        empty.textContent = "No spoken sentences saved here yet.";
+        logList.append(empty);
+        return;
+      }
+      log.forEach((entry) => {
+        const item = document.createElement("li");
+        item.textContent = `${entry.date}: ${entry.text}`;
+        logList.append(item);
+      });
+    }
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        state.audience = chip.dataset.audience;
+        state.reflected = "";
+        localStorage.removeItem("daily-brightness-reflected");
+        status.textContent = "";
+        render();
+      });
+    });
+
+    document.getElementById("echoButton").addEventListener("click", () => {
+      const entry = previousEntry();
+      if (!entry) return;
+      wishInput.value = warmthToWish(entry.text);
+      localStorage.setItem("daily-brightness-wish", wishInput.value);
+      state.reflected = reflectedSentence();
+      localStorage.setItem("daily-brightness-reflected", state.reflected);
+      status.textContent = "Yesterday became today's offering.";
+      render();
+    });
+
+    nameInput.addEventListener("input", () => {
+      localStorage.setItem("daily-brightness-name", nameInput.value.trim());
+      render();
+    });
+
+    wishInput.addEventListener("input", () => {
+      localStorage.setItem("daily-brightness-wish", wishInput.value.trim());
+      state.reflected = "";
+      localStorage.removeItem("daily-brightness-reflected");
+      status.textContent = "";
+      render();
+    });
+
+    document.getElementById("reflectButton").addEventListener("click", () => {
+      const next = reflectedSentence();
+      if (!next) {
+        status.textContent = "Add one noticed thing first.";
+        wishInput.focus();
+        return;
+      }
+      state.reflected = next;
+      localStorage.setItem("daily-brightness-reflected", next);
+      status.textContent = "Turned outward.";
+      render();
+    });
+
+    document.getElementById("nudgeButton").addEventListener("click", () => {
+      state.turn += 1;
+      state.reflected = "";
+      localStorage.setItem("daily-brightness-turn", String(state.turn));
+      localStorage.removeItem("daily-brightness-reflected");
+      status.textContent = "The sentence shifted.";
+      render();
+    });
+
+    document.getElementById("copyButton").addEventListener("click", async () => {
+      const text = sentence.textContent.trim();
+      try {
+        await navigator.clipboard.writeText(text);
+        status.textContent = "Copied.";
+      } catch {
+        status.textContent = text;
+      }
+    });
+
+    document.getElementById("speakButton").addEventListener("click", () => {
+      const text = sentence.textContent.trim();
+      const log = readLog().filter((entry) => entry.text !== text || entry.date !== dayKey);
+      log.unshift({ date: dayKey, text });
+      writeLog(log);
+      status.textContent = "Saved as spoken for today.";
+      renderLog();
+    });
+
+    render();
+  </script>
+</body>
+</html>
