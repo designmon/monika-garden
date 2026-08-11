@@ -7,18 +7,18 @@
   <style>
     :root {
       color-scheme: dark;
-      --abyss: oklch(16% 0.055 242);
-      --water: oklch(24% 0.082 225);
-      --water-2: oklch(33% 0.086 207);
-      --foam: oklch(91% 0.021 205);
-      --soft: oklch(73% 0.052 202);
-      --kelp: oklch(67% 0.13 151);
-      --amber: oklch(76% 0.15 78);
-      --coral: oklch(68% 0.16 21);
-      --violet: oklch(67% 0.13 304);
-      --line: oklch(69% 0.045 206 / 0.28);
-      --shadow: oklch(8% 0.05 240 / 0.45);
-      font-family: Avenir Next, Trebuchet MS, Segoe UI, system-ui, sans-serif;
+      --ink: oklch(95% 0.012 205);
+      --muted: oklch(74% 0.038 205);
+      --dim: oklch(55% 0.052 215);
+      --deep: oklch(16% 0.066 231);
+      --water: oklch(25% 0.105 226);
+      --shelf: oklch(31% 0.095 204);
+      --kelp: oklch(70% 0.125 167);
+      --song: oklch(80% 0.14 80);
+      --warning: oklch(71% 0.15 32);
+      --line: oklch(88% 0.035 200 / 0.18);
+      font-family: ui-rounded, "Avenir Next", "Segoe UI", system-ui, sans-serif;
+      font-size: 16px;
     }
 
     * {
@@ -27,810 +27,1044 @@
 
     html,
     body {
-      min-height: 100%;
       margin: 0;
-      overflow-x: hidden;
-      background: var(--abyss);
-      color: var(--foam);
+      min-height: 100%;
+      overflow: hidden;
+      background: var(--deep);
+      color: var(--ink);
     }
 
     body {
       min-height: 100vh;
-      background:
-        radial-gradient(circle at 14% 12%, oklch(57% 0.13 190 / 0.32), transparent 28rem),
-        radial-gradient(circle at 84% 18%, oklch(68% 0.13 304 / 0.18), transparent 22rem),
-        linear-gradient(180deg, oklch(32% 0.09 213), oklch(17% 0.059 240) 48%, oklch(12% 0.052 249));
-    }
-
-    button,
-    a {
-      font: inherit;
-    }
-
-    button:focus-visible,
-    a:focus-visible {
-      outline: 2px solid var(--amber);
-      outline-offset: 4px;
-    }
-
-    .observatory {
-      min-height: 100vh;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-    }
-
-    .topbar {
-      position: relative;
-      z-index: 3;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: clamp(16px, 3vw, 30px);
-      pointer-events: none;
-    }
-
-    .garden-link,
-    .tempo-button {
-      pointer-events: auto;
-      min-height: 40px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: oklch(18% 0.061 236 / 0.72);
-      color: var(--foam);
-      text-decoration: none;
-      box-shadow: 0 12px 34px var(--shadow);
-      backdrop-filter: blur(10px);
-    }
-
-    .garden-link {
-      padding: 0 13px;
-      font-size: 0.92rem;
-      font-weight: 750;
-    }
-
-    .tempo-button {
-      width: 42px;
-      cursor: pointer;
-    }
-
-    .tempo-button svg {
-      width: 18px;
-      height: 18px;
-      stroke-width: 2.2;
-    }
-
-    .world {
-      position: relative;
-      min-height: calc(100vh - 126px);
-      isolation: isolate;
     }
 
     canvas {
-      position: absolute;
+      position: fixed;
       inset: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       image-rendering: pixelated;
+      cursor: crosshair;
+      background: var(--deep);
     }
 
-    .title {
-      position: absolute;
+    .chrome {
+      position: relative;
       z-index: 2;
-      left: clamp(18px, 5vw, 72px);
-      top: clamp(16px, 7vh, 74px);
-      max-width: min(620px, calc(100vw - 36px));
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(18rem, 24rem) 1fr minmax(16rem, 21rem);
       pointer-events: none;
+    }
+
+    .mast,
+    .ledger {
+      pointer-events: auto;
+      align-self: start;
+      margin: clamp(1rem, 2.5vw, 2rem);
+      border: 1px solid var(--line);
+      background: oklch(16% 0.052 226 / 0.78);
+      box-shadow: 0 1.4rem 4rem oklch(7% 0.07 230 / 0.42);
+      backdrop-filter: blur(10px);
+    }
+
+    .mast {
+      padding: 1rem;
+      max-width: 24rem;
+    }
+
+    .garden-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--song);
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0;
+      margin-bottom: 1.15rem;
+    }
+
+    .garden-link:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--song);
+      outline-offset: 3px;
     }
 
     h1 {
       margin: 0;
       max-width: 10ch;
-      color: oklch(95% 0.026 198);
-      font-size: clamp(2.5rem, 8vw, 6.9rem);
-      line-height: 0.9;
+      font-size: clamp(2.8rem, 8vw, 6.5rem);
+      line-height: 0.86;
       letter-spacing: 0;
-      text-shadow: 0 6px 38px oklch(9% 0.05 240 / 0.5);
-    }
-
-    .subtitle {
-      max-width: 34rem;
-      margin: 18px 0 0;
-      color: oklch(83% 0.044 202);
-      font-size: clamp(1rem, 1.8vw, 1.22rem);
-      line-height: 1.62;
-      text-shadow: 0 4px 24px oklch(8% 0.045 240 / 0.55);
-    }
-
-    .ledger {
-      position: absolute;
-      z-index: 2;
-      right: clamp(14px, 3vw, 40px);
-      bottom: clamp(16px, 4vh, 38px);
-      width: min(390px, calc(100vw - 28px));
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 16px;
-      background: oklch(14% 0.053 244 / 0.72);
-      box-shadow: 0 24px 70px var(--shadow);
-      backdrop-filter: blur(12px);
-    }
-
-    .ledger-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 12px;
-    }
-
-    .ledger h2 {
-      margin: 0;
-      color: oklch(93% 0.025 195);
-      font-size: 1rem;
-      line-height: 1.2;
-      letter-spacing: 0;
-    }
-
-    .cycle {
-      flex: 0 0 auto;
-      color: var(--amber);
-      font-size: 0.84rem;
-      font-weight: 800;
-    }
-
-    .event-list {
-      display: grid;
-      gap: 9px;
-      min-height: 7.6rem;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .event {
-      display: grid;
-      grid-template-columns: 10px 1fr;
-      gap: 9px;
-      align-items: start;
-      color: oklch(85% 0.037 204);
-      font-size: 0.88rem;
-      line-height: 1.38;
-    }
-
-    .event::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      margin-top: 5px;
-      border: 1px solid currentColor;
-      background: var(--event-color, var(--kelp));
-      box-shadow: 0 0 18px var(--event-color, var(--kelp));
-    }
-
-    .pod-strip {
-      position: absolute;
-      z-index: 2;
-      left: clamp(14px, 3vw, 34px);
-      right: clamp(14px, 3vw, 34px);
-      bottom: clamp(14px, 3vh, 32px);
-      display: grid;
-      grid-template-columns: repeat(6, minmax(76px, 1fr));
-      gap: 8px;
-      max-width: 710px;
-      pointer-events: none;
-    }
-
-    .whale-card {
-      min-height: 68px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 9px 10px;
-      background: oklch(15% 0.052 244 / 0.58);
-      box-shadow: 0 18px 48px oklch(8% 0.05 240 / 0.32);
-      backdrop-filter: blur(8px);
-    }
-
-    .whale-name {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      color: var(--foam);
-      font-size: 0.78rem;
       font-weight: 850;
     }
 
-    .whale-name::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      background: var(--mark);
-      box-shadow: 0 0 13px var(--mark);
+    .sub {
+      margin: 1.1rem 0 0;
+      max-width: 30ch;
+      color: var(--muted);
+      line-height: 1.5;
     }
 
-    .whale-role {
-      margin-top: 5px;
-      color: oklch(72% 0.043 203);
-      font-size: 0.72rem;
-      line-height: 1.25;
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-top: 1.25rem;
     }
 
-    .footer-note {
-      position: relative;
+    button {
+      min-height: 2.4rem;
+      border: 1px solid oklch(78% 0.05 205 / 0.3);
+      border-radius: 0;
+      padding: 0.5rem 0.72rem;
+      background: oklch(24% 0.082 215 / 0.84);
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: oklch(33% 0.1 207 / 0.9);
+    }
+
+    button[aria-pressed="true"] {
+      border-color: oklch(82% 0.13 82 / 0.78);
+      color: var(--song);
+    }
+
+    .ledger {
+      grid-column: 3;
+      justify-self: end;
+      width: min(21rem, calc(100vw - 2rem));
+      padding: 0.9rem;
+    }
+
+    .section-title {
+      margin: 0 0 0.7rem;
+      color: var(--song);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .signal {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.25rem 0.8rem;
+      padding: 0.58rem 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .signal:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .signal strong {
+      font-size: 0.92rem;
+      line-height: 1.2;
+    }
+
+    .signal span {
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .role {
+      color: var(--kelp);
+      font-size: 0.74rem;
+      justify-self: end;
+      white-space: nowrap;
+    }
+
+    .events {
+      margin: 0.8rem 0 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--line);
+    }
+
+    .events li {
+      display: grid;
+      grid-template-columns: 3.3rem 1fr;
+      gap: 0.7rem;
+      padding: 0.62rem 0;
+      border-bottom: 1px solid oklch(88% 0.035 200 / 0.12);
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .events time {
+      color: var(--song);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .inspector {
+      position: fixed;
+      left: 50%;
+      bottom: clamp(1rem, 2.6vw, 2rem);
       z-index: 3;
-      padding: 0 clamp(16px, 3vw, 30px) clamp(18px, 3vw, 26px);
-      color: oklch(70% 0.04 205);
-      font-size: 0.82rem;
+      width: min(34rem, calc(100vw - 2rem));
+      transform: translateX(-50%);
+      border: 1px solid var(--line);
+      background: oklch(12% 0.045 231 / 0.72);
+      padding: 0.75rem 0.9rem;
+      pointer-events: auto;
+      backdrop-filter: blur(8px);
     }
 
-    @media (max-width: 880px) {
-      .world {
-        min-height: 820px;
+    .inspector h2 {
+      margin: 0 0 0.25rem;
+      font-size: 1rem;
+      letter-spacing: 0;
+    }
+
+    .inspector p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.84rem;
+    }
+
+    .legend {
+      position: fixed;
+      right: clamp(1rem, 2.5vw, 2rem);
+      bottom: clamp(1rem, 2.5vw, 2rem);
+      z-index: 3;
+      display: flex;
+      flex-wrap: wrap;
+      max-width: min(27rem, calc(100vw - 2rem));
+      gap: 0.5rem;
+      color: var(--muted);
+      font-size: 0.74rem;
+      pointer-events: none;
+    }
+
+    .key {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      min-height: 1.6rem;
+      padding: 0.24rem 0.45rem;
+      border: 1px solid oklch(88% 0.035 200 / 0.14);
+      background: oklch(12% 0.048 225 / 0.58);
+    }
+
+    .swatch {
+      width: 0.72rem;
+      height: 0.72rem;
+      border: 1px solid oklch(94% 0.03 200 / 0.35);
+      image-rendering: pixelated;
+    }
+
+    .memory-swatch {
+      background: var(--song);
+    }
+
+    .trust-swatch {
+      background: var(--kelp);
+    }
+
+    .noise-swatch {
+      background: var(--warning);
+    }
+
+    .dialect-swatch {
+      background: oklch(77% 0.12 278);
+    }
+
+    @media (max-width: 900px) {
+      html,
+      body {
+        overflow: auto;
       }
 
-      .title {
-        top: 26px;
+      canvas {
+        min-height: 100vh;
       }
 
+      .chrome {
+        min-height: auto;
+        display: block;
+        padding-bottom: 14rem;
+      }
+
+      .mast,
       .ledger {
-        right: 14px;
-        left: 14px;
-        bottom: 152px;
-        width: auto;
-      }
-
-      .pod-strip {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    @media (max-width: 560px) {
-      .topbar {
-        padding: 14px;
-      }
-
-      .world {
-        min-height: 780px;
+        width: min(100% - 2rem, 38rem);
+        margin: 1rem;
       }
 
       h1 {
         max-width: 9ch;
-      }
-
-      .subtitle {
-        max-width: 21rem;
+        font-size: 3.5rem;
       }
 
       .ledger {
-        bottom: 212px;
+        justify-self: auto;
       }
 
-      .pod-strip {
-        grid-template-columns: repeat(2, 1fr);
+      .inspector {
+        left: 1rem;
+        right: 1rem;
+        bottom: 4.2rem;
+        width: auto;
+        transform: none;
       }
 
-      .whale-card {
-        min-height: 60px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .tempo-button {
-        display: none;
+      .legend {
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
       }
     }
   </style>
 </head>
 <body>
-  <main class="observatory">
-    <nav class="topbar" aria-label="Garden navigation">
-      <a class="garden-link" href="../../../viewer/">Back to garden</a>
-      <button class="tempo-button" id="tempoButton" type="button" aria-label="Pause observatory">
-        <svg id="tempoIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-          <path d="M8 5v14"></path>
-          <path d="M16 5v14"></path>
-        </svg>
-      </button>
-    </nav>
+  <canvas id="sea" aria-label="Pixel-art orca pod simulation"></canvas>
 
-    <section class="world" aria-label="Pixel-art orca social simulation">
-      <canvas id="reef" aria-hidden="true"></canvas>
-      <div class="title">
-        <h1>Orca Intelligence Observatory</h1>
-        <p class="subtitle">A small pod remembers routes, teaches calves, gathers around elders, and carries a shared dialect through cold pixel water.</p>
+  <main class="chrome" aria-label="Orca intelligence observatory">
+    <section class="mast">
+      <a class="garden-link" href="../../../viewer/">Back to garden</a>
+      <h1>Orca Intelligence Observatory</h1>
+      <p class="sub">A small pod remembers routes, copies elders, guards calves, and carries a dialect through the water.</p>
+      <div class="controls" aria-label="Simulation controls">
+        <button id="pause" type="button" aria-pressed="false">Pause</button>
+        <button id="focus" type="button" aria-pressed="false">Follow matriarch</button>
+        <button id="reset" type="button">New tide</button>
       </div>
-      <aside class="ledger" aria-live="polite">
-        <div class="ledger-title">
-          <h2>What the pod is doing</h2>
-          <div class="cycle" id="cycleLabel">cycle 001</div>
-        </div>
-        <ol class="event-list" id="eventList"></ol>
-      </aside>
-      <div class="pod-strip" id="podStrip" aria-label="Pod members"></div>
     </section>
 
-    <div class="footer-note">No feed, no scoring, no commands. The observatory is meant to be watched.</div>
+    <aside class="ledger" aria-label="Live pod observations">
+      <p class="section-title">Pod Signals</p>
+      <div id="signals"></div>
+      <ul class="events" id="events"></ul>
+    </aside>
   </main>
+
+  <section class="inspector" aria-live="polite">
+    <h2 id="inspectorTitle">Click an orca to listen closer</h2>
+    <p id="inspectorBody">Bright knots are remembered places. Green lines are trusted bonds. Purple pulses are dialect calls moving through the pod.</p>
+  </section>
+
+  <div class="legend" aria-label="Visual key">
+    <span class="key"><span class="swatch memory-swatch"></span>memory</span>
+    <span class="key"><span class="swatch trust-swatch"></span>bond</span>
+    <span class="key"><span class="swatch dialect-swatch"></span>dialect</span>
+    <span class="key"><span class="swatch noise-swatch"></span>noise shadow</span>
+  </div>
 
   <script>
     (() => {
-      const canvas = document.getElementById("reef");
+      "use strict";
+
+      const canvas = document.getElementById("sea");
       const ctx = canvas.getContext("2d");
-      const eventList = document.getElementById("eventList");
-      const cycleLabel = document.getElementById("cycleLabel");
-      const podStrip = document.getElementById("podStrip");
-      const tempoButton = document.getElementById("tempoButton");
-      const tempoIcon = document.getElementById("tempoIcon");
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const pauseButton = document.getElementById("pause");
+      const focusButton = document.getElementById("focus");
+      const resetButton = document.getElementById("reset");
+      const signalsNode = document.getElementById("signals");
+      const eventsNode = document.getElementById("events");
+      const inspectorTitle = document.getElementById("inspectorTitle");
+      const inspectorBody = document.getElementById("inspectorBody");
 
-      const palette = {
-        foam: "oklch(93% 0.02 205)",
-        ink: "oklch(9% 0.03 245)",
-        elder: "oklch(76% 0.15 78)",
-        scout: "oklch(68% 0.16 21)",
-        calf: "oklch(67% 0.13 304)",
-        teacher: "oklch(67% 0.13 151)",
-        route: "oklch(83% 0.08 192 / 0.42)",
-        memory: "oklch(76% 0.14 78 / 0.5)",
-        waterLine: "oklch(66% 0.07 200 / 0.13)"
-      };
-
-      const pod = [
-        {
-          name: "Sava",
-          role: "matriarch, keeps routes",
-          mark: palette.elder,
-          age: 71,
-          x: 0.42,
-          y: 0.52,
-          speed: 0.00034,
-          size: 1.22,
-          phase: 0,
-          target: 2,
-          memory: [0, 1, 2, 3],
-          kin: ["Nori", "Lio", "Mika"],
-          dialect: [1, 0, 1, 1, 0]
-        },
-        {
-          name: "Nori",
-          role: "teacher, repeats lessons",
-          mark: palette.teacher,
-          age: 38,
-          x: 0.33,
-          y: 0.58,
-          speed: 0.00043,
-          size: 1.08,
-          phase: 1.9,
-          target: 2,
-          memory: [0, 2],
-          kin: ["Sava", "Mika"],
-          dialect: [1, 0, 1, 1, 0]
-        },
-        {
-          name: "Lio",
-          role: "scout, tests edges",
-          mark: palette.scout,
-          age: 24,
-          x: 0.52,
-          y: 0.44,
-          speed: 0.00055,
-          size: 1,
-          phase: 3.4,
-          target: 1,
-          memory: [1, 3],
-          kin: ["Sava"],
-          dialect: [1, 1, 0, 1, 0]
-        },
-        {
-          name: "Mika",
-          role: "calf, learns by orbit",
-          mark: palette.calf,
-          age: 5,
-          x: 0.27,
-          y: 0.63,
-          speed: 0.00049,
-          size: 0.72,
-          phase: 2.8,
-          target: 0,
-          memory: [],
-          kin: ["Sava", "Nori"],
-          dialect: [1, 0, 1, 1, 0]
-        },
-        {
-          name: "Venn",
-          role: "auntie, guards calves",
-          mark: "oklch(72% 0.09 187)",
-          age: 42,
-          x: 0.49,
-          y: 0.66,
-          speed: 0.00041,
-          size: 1.03,
-          phase: 4.4,
-          target: 2,
-          memory: [2, 3],
-          kin: ["Mika", "Nori"],
-          dialect: [1, 0, 1, 1, 0]
-        },
-        {
-          name: "Tala",
-          role: "visitor, brings a variant call",
-          mark: "oklch(78% 0.11 319)",
-          age: 31,
-          x: 0.7,
-          y: 0.4,
-          speed: 0.00038,
-          size: 0.98,
-          phase: 5.2,
-          target: 1,
-          memory: [1],
-          kin: [],
-          dialect: [0, 1, 0, 1, 1]
-        }
+      const rand = mulberry32(Date.now() % 2147483647);
+      const names = ["Sila", "Mara", "Taku", "Lumen", "Nami", "Koa", "Vega", "Rill", "Tala", "Ivo"];
+      const roles = [
+        ["matriarch", 68, 0],
+        ["teacher", 42, 0],
+        ["guardian", 36, 0],
+        ["scout", 19, 0],
+        ["calf", 3, 0],
+        ["calf", 5, 0],
+        ["aunt", 29, 0],
+        ["scout", 17, 1],
+        ["elder", 57, 1]
+      ];
+      const dialects = ["low-click", "round-whistle", "split-call"];
+      const lessons = ["reef arc", "herring veil", "quiet dive", "calf braid", "north shelf"];
+      const route = [
+        { x: 0.14, y: 0.68, label: "cold shelf" },
+        { x: 0.31, y: 0.42, label: "kelp gate" },
+        { x: 0.56, y: 0.58, label: "deep seam" },
+        { x: 0.77, y: 0.34, label: "herring room" },
+        { x: 0.88, y: 0.68, label: "quiet cove" }
       ];
 
-      const places = [
-        { name: "shelf", x: 0.2, y: 0.65, pull: 0.95, color: "oklch(65% 0.12 151 / 0.8)" },
-        { name: "breach", x: 0.78, y: 0.32, pull: 0.72, color: "oklch(76% 0.15 78 / 0.75)" },
-        { name: "school", x: 0.52, y: 0.55, pull: 0.86, color: "oklch(68% 0.16 21 / 0.75)" },
-        { name: "old route", x: 0.65, y: 0.76, pull: 0.8, color: "oklch(67% 0.13 304 / 0.7)" }
-      ];
+      let width = 320;
+      let height = 180;
+      let time = 0;
+      let paused = false;
+      let followMatriarch = false;
+      let selectedId = null;
+      let nextEventAt = 1.5;
+      let tideName = "first tide";
+      let ship = { x: -80, y: 30, timer: 11 };
+      let events = [];
+      let pulses = [];
+      let food = [];
+      let pod = [];
 
-      const eventTemplates = [
-        { color: palette.elder, text: "Sava turns first. The others bend into her remembered shelf route." },
-        { color: palette.teacher, text: "Nori slows beside Mika and repeats the hunting arc until the calf copies it." },
-        { color: palette.scout, text: "Lio leaves the pod, samples the open edge, then returns with a sharper path." },
-        { color: palette.calf, text: "Mika echoes the family dialect out of order. Sava answers with the full phrase." },
-        { color: "oklch(72% 0.09 187)", text: "Venn crosses between Mika and deep water, holding the calf inside the pod." },
-        { color: "oklch(78% 0.11 319)", text: "Tala calls differently. The pod keeps its rhythm, then borrows one bright note." },
-        { color: palette.memory, text: "The group revisits a place that is not visible until their paths redraw it." }
-      ];
-
-      let width = 0;
-      let height = 0;
-      let dpr = 1;
-      let t = 0;
-      let cycle = 1;
-      let paused = reducedMotion;
-      let lastFrame = performance.now();
-      let lastEventAt = 0;
-      let routePulse = 0;
-      const wakes = [];
-      const songRings = [];
-      const events = [];
-
-      function resize() {
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const rect = canvas.getBoundingClientRect();
-        width = Math.max(320, Math.floor(rect.width));
-        height = Math.max(520, Math.floor(rect.height));
-        canvas.width = Math.floor(width * dpr);
-        canvas.height = Math.floor(height * dpr);
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      }
-
-      function seedInterface() {
-        podStrip.innerHTML = pod.map((orca) => `
-          <div class="whale-card" style="--mark: ${orca.mark}">
-            <div class="whale-name">${orca.name}</div>
-            <div class="whale-role">${orca.role}</div>
-          </div>
-        `).join("");
-        pushEvent(eventTemplates[0]);
-        pushEvent(eventTemplates[1]);
-        pushEvent(eventTemplates[4]);
-        setTempoIcon();
-      }
-
-      function pushEvent(event) {
-        events.unshift(event);
-        while (events.length > 4) events.pop();
-        eventList.innerHTML = events.map((item) => `
-          <li class="event" style="--event-color: ${item.color}">${item.text}</li>
-        `).join("");
-      }
-
-      function setTempoIcon() {
-        tempoButton.setAttribute("aria-label", paused ? "Resume observatory" : "Pause observatory");
-        tempoIcon.innerHTML = paused
-          ? '<path d="M8 5v14l11-7z"></path>'
-          : '<path d="M8 5v14"></path><path d="M16 5v14"></path>';
-      }
-
-      function placeToPixel(place) {
-        return {
-          x: place.x * width,
-          y: place.y * height
+      function mulberry32(seed) {
+        return function random() {
+          let t = seed += 0x6D2B79F5;
+          t = Math.imul(t ^ t >>> 15, t | 1);
+          t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+          return ((t ^ t >>> 14) >>> 0) / 4294967296;
         };
       }
 
-      function drawBackground() {
+      function resize() {
+        width = Math.max(260, Math.floor(window.innerWidth / 3));
+        height = Math.max(170, Math.floor(window.innerHeight / 3));
+        canvas.width = width;
+        canvas.height = height;
+        ctx.imageSmoothingEnabled = false;
+      }
+
+      function resetWorld() {
+        const tideWords = ["blue shelf", "herring moon", "low-current", "kelp bell", "deep green"];
+        tideName = tideWords[Math.floor(rand() * tideWords.length)];
+        time = 0;
+        selectedId = null;
+        ship = { x: -80, y: Math.max(24, height * 0.2), timer: 8 + rand() * 8 };
+        pulses = [];
+        events = [];
+        food = Array.from({ length: 26 }, (_, index) => ({
+          id: index,
+          x: rand() * width,
+          y: height * (0.22 + rand() * 0.62),
+          vx: -0.08 + rand() * 0.16,
+          vy: -0.04 + rand() * 0.08,
+          shimmer: rand() * 6
+        }));
+
+        pod = roles.map(([role, age, family], index) => {
+          const baseX = width * (0.22 + rand() * 0.2) + family * width * 0.35;
+          const baseY = height * (0.42 + rand() * 0.22);
+          const personalLessons = new Set(role === "matriarch" || role === "elder" ? lessons.slice(0, 4) : []);
+          if (role === "teacher") personalLessons.add("reef arc");
+          if (role === "guardian") personalLessons.add("calf braid");
+          return {
+            id: index,
+            name: names[index],
+            role,
+            age,
+            family,
+            dialect: dialects[family],
+            x: baseX,
+            y: baseY,
+            vx: rand() * 0.3 - 0.15,
+            vy: rand() * 0.3 - 0.15,
+            targetRoute: index % route.length,
+            memory: [],
+            lessons: personalLessons,
+            trust: new Map(),
+            hunger: rand(),
+            pulseCooldown: rand() * 5,
+            teachCooldown: 2 + rand() * 5,
+            protectFocus: null
+          };
+        });
+
+        for (const orca of pod) {
+          for (const other of pod) {
+            if (orca.id !== other.id) {
+              const sameFamily = orca.family === other.family ? 0.42 : 0.12;
+              const kin = (orca.role === "calf" && ["matriarch", "teacher", "guardian", "aunt"].includes(other.role)) ? 0.32 : 0;
+              orca.trust.set(other.id, Math.min(0.95, sameFamily + kin + rand() * 0.22));
+            }
+          }
+        }
+
+        addEvent("00:00", "The pod enters on " + tideName + ". Sila carries four remembered places.");
+        updateSignals();
+        updateInspector();
+      }
+
+      function update(dt) {
+        time += dt;
+        updateFood(dt);
+        updateShip(dt);
+        updatePod(dt);
+        updatePulses(dt);
+
+        if (time > nextEventAt) {
+          chooseSocialEvent();
+          nextEventAt = time + 3.4 + rand() * 5.2;
+        }
+      }
+
+      function updateFood(dt) {
+        for (const fish of food) {
+          fish.x += fish.vx * dt * 10;
+          fish.y += Math.sin(time * 1.7 + fish.shimmer) * 0.012 * dt * 10 + fish.vy * dt * 8;
+          if (fish.x < -8) fish.x = width + 8;
+          if (fish.x > width + 8) fish.x = -8;
+          fish.y = clamp(fish.y, height * 0.18, height * 0.86);
+        }
+      }
+
+      function updateShip(dt) {
+        ship.timer -= dt;
+        if (ship.timer <= 0 && ship.x < -40) {
+          ship.x = -30;
+          ship.y = height * (0.16 + rand() * 0.16);
+          ship.timer = 22 + rand() * 12;
+          addEvent(clock(), "A noise shadow crosses the surface. Guardians move between it and the calves.");
+        }
+        if (ship.x > -40) {
+          ship.x += dt * 11;
+          if (ship.x > width + 50) ship.x = -90;
+        }
+      }
+
+      function updatePod(dt) {
+        const matriarch = pod.find((orca) => orca.role === "matriarch");
+        const teacher = pod.find((orca) => orca.role === "teacher");
+        const calves = pod.filter((orca) => orca.role === "calf");
+
+        for (const orca of pod) {
+          const target = targetFor(orca, matriarch, teacher, calves);
+          const desiredX = target.x - orca.x;
+          const desiredY = target.y - orca.y;
+          const dist = Math.max(1, Math.hypot(desiredX, desiredY));
+          const speed = roleSpeed(orca.role);
+
+          orca.vx += (desiredX / dist) * speed * dt;
+          orca.vy += (desiredY / dist) * speed * dt;
+          orca.vx += (noise(orca.id * 10 + time * 0.33) - 0.5) * 0.11 * dt;
+          orca.vy += (noise(orca.id * 20 + time * 0.29) - 0.5) * 0.09 * dt;
+
+          avoidShip(orca, dt);
+          avoidCrowding(orca, dt);
+
+          const drag = Math.pow(0.86, dt * 4);
+          orca.vx *= drag;
+          orca.vy *= drag;
+          const maxSpeed = 0.62 + speed * 1.6;
+          const actual = Math.hypot(orca.vx, orca.vy);
+          if (actual > maxSpeed) {
+            orca.vx = (orca.vx / actual) * maxSpeed;
+            orca.vy = (orca.vy / actual) * maxSpeed;
+          }
+
+          orca.x = clamp(orca.x + orca.vx * dt * 12, 8, width - 8);
+          orca.y = clamp(orca.y + orca.vy * dt * 12, 18, height - 10);
+          rememberLandmark(orca);
+          passLessons(orca, dt);
+          pulseDialect(orca, dt);
+        }
+      }
+
+      function targetFor(orca, matriarch, teacher, calves) {
+        if (orca.role === "matriarch") {
+          const point = route[orca.targetRoute];
+          const px = point.x * width;
+          const py = point.y * height;
+          if (Math.hypot(px - orca.x, py - orca.y) < 13) {
+            orca.targetRoute = (orca.targetRoute + 1) % route.length;
+          }
+          return { x: px, y: py };
+        }
+
+        if (orca.role === "teacher") {
+          const calfCenter = centerOf(calves);
+          return {
+            x: calfCenter.x * 0.58 + matriarch.x * 0.42 + Math.sin(time * 0.5) * 14,
+            y: calfCenter.y * 0.58 + matriarch.y * 0.42 + Math.cos(time * 0.4) * 9
+          };
+        }
+
+        if (orca.role === "guardian") {
+          const calfCenter = centerOf(calves);
+          if (ship.x > -30 && ship.x < width + 20) {
+            return {
+              x: calfCenter.x * 0.65 + ship.x * 0.35,
+              y: calfCenter.y * 0.65 + ship.y * 0.35 + 16
+            };
+          }
+          return { x: calfCenter.x + 14, y: calfCenter.y - 7 };
+        }
+
+        if (orca.role === "calf") {
+          const guide = teacher || matriarch;
+          const play = Math.sin(time * (0.9 + orca.id * 0.06)) * 10;
+          return { x: guide.x - 10 + play, y: guide.y + 12 + Math.cos(time + orca.id) * 8 };
+        }
+
+        if (orca.role === "scout") {
+          const scoutPoint = route[(orca.targetRoute + 1 + orca.id) % route.length];
+          const returnHome = Math.sin(time * 0.18 + orca.id) > 0.2;
+          if (returnHome) {
+            return { x: matriarch.x + Math.sin(time + orca.id) * 22, y: matriarch.y + Math.cos(time * 0.8) * 15 };
+          }
+          return { x: scoutPoint.x * width, y: scoutPoint.y * height };
+        }
+
+        if (orca.role === "elder") {
+          const point = route[(matriarch.targetRoute + 4) % route.length];
+          return { x: point.x * width - 12, y: point.y * height + 10 };
+        }
+
+        return { x: matriarch.x - 16, y: matriarch.y + 5 };
+      }
+
+      function roleSpeed(role) {
+        return {
+          matriarch: 0.08,
+          elder: 0.065,
+          teacher: 0.095,
+          guardian: 0.12,
+          scout: 0.16,
+          calf: 0.13,
+          aunt: 0.1
+        }[role] || 0.1;
+      }
+
+      function avoidShip(orca, dt) {
+        if (ship.x < -30 || ship.x > width + 20) return;
+        const dx = orca.x - ship.x;
+        const dy = orca.y - ship.y;
+        const dist = Math.max(1, Math.hypot(dx, dy));
+        const fear = orca.role === "calf" ? 58 : 40;
+        if (dist < fear) {
+          orca.vx += (dx / dist) * 0.55 * dt;
+          orca.vy += (dy / dist) * 0.5 * dt;
+        }
+      }
+
+      function avoidCrowding(orca, dt) {
+        for (const other of pod) {
+          if (other.id === orca.id) continue;
+          const dx = orca.x - other.x;
+          const dy = orca.y - other.y;
+          const dist = Math.max(0.5, Math.hypot(dx, dy));
+          if (dist < 5.8) {
+            orca.vx += (dx / dist) * 0.15 * dt;
+            orca.vy += (dy / dist) * 0.15 * dt;
+          }
+          if (dist < 18) {
+            const oldTrust = orca.trust.get(other.id) || 0;
+            orca.trust.set(other.id, clamp(oldTrust + 0.005 * dt, 0, 1));
+          }
+        }
+      }
+
+      function rememberLandmark(orca) {
+        if (!["matriarch", "elder", "scout"].includes(orca.role)) return;
+        for (const point of route) {
+          const px = point.x * width;
+          const py = point.y * height;
+          if (Math.hypot(px - orca.x, py - orca.y) < 11) {
+            const recent = orca.memory.find((memory) => memory.label === point.label && time - memory.t < 6);
+            if (!recent) {
+              orca.memory.push({ x: px, y: py, t: time, label: point.label });
+              orca.memory = orca.memory.slice(-9);
+            }
+          }
+        }
+      }
+
+      function passLessons(orca, dt) {
+        if (orca.role !== "teacher" && orca.role !== "matriarch" && orca.role !== "elder") return;
+        orca.teachCooldown -= dt;
+        if (orca.teachCooldown > 0) return;
+        const pupils = pod.filter((other) => other.id !== orca.id && Math.hypot(other.x - orca.x, other.y - orca.y) < 18);
+        const pupil = pupils.find((other) => other.lessons.size < lessons.length && (other.role === "calf" || other.role === "scout"));
+        if (!pupil) {
+          orca.teachCooldown = 2 + rand() * 4;
+          return;
+        }
+        const lesson = [...orca.lessons].find((item) => !pupil.lessons.has(item)) || lessons[Math.floor(rand() * lessons.length)];
+        pupil.lessons.add(lesson);
+        pulses.push({ x: orca.x, y: orca.y, r: 2, max: 28, color: "lesson", label: lesson });
+        addEvent(clock(), orca.name + " teaches " + pupil.name + " the " + lesson + ".");
+        orca.teachCooldown = 8 + rand() * 9;
+        updateSignals();
+      }
+
+      function pulseDialect(orca, dt) {
+        orca.pulseCooldown -= dt;
+        if (orca.pulseCooldown > 0) return;
+        const close = pod.filter((other) => other.id !== orca.id && other.family === orca.family && Math.hypot(other.x - orca.x, other.y - orca.y) < 38);
+        if (close.length > 0 || orca.role === "matriarch") {
+          pulses.push({ x: orca.x, y: orca.y, r: 2, max: 18 + close.length * 4, color: "dialect", label: orca.dialect });
+        }
+        orca.pulseCooldown = 3 + rand() * 6;
+      }
+
+      function updatePulses(dt) {
+        for (const pulse of pulses) {
+          pulse.r += dt * 8.5;
+        }
+        pulses = pulses.filter((pulse) => pulse.r < pulse.max);
+      }
+
+      function chooseSocialEvent() {
+        const calves = pod.filter((orca) => orca.role === "calf");
+        const scouts = pod.filter((orca) => orca.role === "scout");
+        const matriarch = pod.find((orca) => orca.role === "matriarch");
+        const roll = rand();
+        if (roll < 0.32) {
+          const calf = calves[Math.floor(rand() * calves.length)];
+          const guide = pod.find((orca) => orca.role === "teacher");
+          addEvent(clock(), calf.name + " copies " + guide.name + "'s slow turn and keeps it.");
+          calf.lessons.add("slow turn");
+          pulses.push({ x: calf.x, y: calf.y, r: 2, max: 24, color: "lesson" });
+        } else if (roll < 0.62) {
+          const scout = scouts[Math.floor(rand() * scouts.length)];
+          const point = route[Math.floor(rand() * route.length)];
+          scout.memory.push({ x: point.x * width, y: point.y * height, t: time, label: point.label });
+          addEvent(clock(), scout.name + " returns from " + point.label + "; the pod bends course.");
+          matriarch.targetRoute = route.indexOf(point);
+        } else if (roll < 0.82) {
+          const elders = pod.filter((orca) => orca.role === "matriarch" || orca.role === "elder");
+          const elder = elders[Math.floor(rand() * elders.length)];
+          addEvent(clock(), elder.name + " calls a shared rest. The calves fold into the center.");
+          pulses.push({ x: elder.x, y: elder.y, r: 4, max: 38, color: "dialect" });
+        } else {
+          const family = Math.floor(rand() * 2);
+          const familyMembers = pod.filter((orca) => orca.family === family);
+          const phrase = familyMembers[0].dialect;
+          addEvent(clock(), "A " + phrase + " phrase passes through family " + (family + 1) + ".");
+          for (const orca of familyMembers) {
+            pulses.push({ x: orca.x, y: orca.y, r: 1, max: 18, color: "dialect" });
+          }
+        }
+        updateSignals();
+      }
+
+      function draw() {
+        drawWater();
+        drawRouteMemory();
+        drawFood();
+        drawShip();
+        drawRelationships();
+        drawPulses();
+        drawPod();
+        drawLabels();
+      }
+
+      function drawWater() {
         const gradient = ctx.createLinearGradient(0, 0, 0, height);
-        gradient.addColorStop(0, "oklch(34% 0.09 211)");
-        gradient.addColorStop(0.46, "oklch(22% 0.072 229)");
-        gradient.addColorStop(1, "oklch(12% 0.054 247)");
+        gradient.addColorStop(0, "#12334d");
+        gradient.addColorStop(0.48, "#0f5360");
+        gradient.addColorStop(1, "#082635");
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, width, height);
 
-        ctx.save();
-        ctx.globalAlpha = 0.45;
-        for (let y = -20; y < height + 40; y += 34) {
-          ctx.strokeStyle = palette.waterLine;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          for (let x = -10; x <= width + 10; x += 14) {
-            const wave = Math.sin(x * 0.012 + y * 0.04 + t * 0.0017) * 8;
-            if (x === -10) ctx.moveTo(x, y + wave);
-            else ctx.lineTo(x, y + wave);
+        for (let y = 0; y < height; y += 9) {
+          ctx.fillStyle = y % 18 === 0 ? "rgba(138, 216, 220, 0.08)" : "rgba(13, 42, 62, 0.16)";
+          for (let x = -20; x < width + 20; x += 28) {
+            const wave = Math.floor(Math.sin(time * 0.5 + y * 0.06 + x * 0.03) * 5);
+            ctx.fillRect(x + wave, y, 16, 1);
           }
-          ctx.stroke();
         }
-        ctx.restore();
 
-        drawKelp();
-        drawPlaces();
+        ctx.fillStyle = "rgba(66, 143, 113, 0.32)";
+        for (let i = 0; i < 36; i += 1) {
+          const x = (i * 37 + Math.sin(time * 0.2 + i) * 12) % width;
+          const base = height - 7 - (i % 5);
+          const tall = 8 + (i % 7) * 3;
+          ctx.fillRect(x, base - tall, 2, tall);
+          ctx.fillRect(x + 3, base - tall + 4, 1, Math.max(2, tall - 5));
+        }
       }
 
-      function drawKelp() {
+      function drawRouteMemory() {
         ctx.save();
-        for (let i = 0; i < 24; i += 1) {
-          const baseX = (i / 23) * width;
-          const baseY = height + 8;
-          const kelpHeight = 80 + ((i * 47) % 120);
-          const sway = Math.sin(t * 0.001 + i) * 12;
-          ctx.strokeStyle = i % 4 === 0 ? "oklch(62% 0.13 151 / 0.42)" : "oklch(50% 0.1 164 / 0.32)";
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(baseX, baseY);
-          ctx.bezierCurveTo(baseX + sway, baseY - kelpHeight * 0.35, baseX - sway, baseY - kelpHeight * 0.7, baseX + sway * 0.4, baseY - kelpHeight);
-          ctx.stroke();
-        }
-        ctx.restore();
-      }
-
-      function drawPlaces() {
-        places.forEach((place, index) => {
-          const p = placeToPixel(place);
-          const pulse = 0.5 + Math.sin(t * 0.0014 + index) * 0.5;
-          ctx.save();
-          ctx.globalAlpha = 0.55 + pulse * 0.18;
-          ctx.fillStyle = place.color;
-          pixelDiamond(p.x, p.y, 5 + pulse * 5);
-          ctx.globalAlpha = 0.22;
-          ctx.strokeStyle = place.color;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, 28 + pulse * 18, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.restore();
-        });
-      }
-
-      function pixelDiamond(x, y, r) {
-        const size = Math.round(r);
+        ctx.strokeStyle = "rgba(236, 215, 122, 0.22)";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 5]);
         ctx.beginPath();
-        ctx.moveTo(Math.round(x), Math.round(y - size));
-        ctx.lineTo(Math.round(x + size), Math.round(y));
-        ctx.lineTo(Math.round(x), Math.round(y + size));
-        ctx.lineTo(Math.round(x - size), Math.round(y));
-        ctx.closePath();
-        ctx.fill();
-      }
-
-      function updatePod(delta) {
-        routePulse += delta * 0.0006;
-        pod.forEach((orca, index) => {
-          const targetPlace = places[orca.target];
-          const target = placeToPixel(targetPlace);
-          const elderBias = index === 0 ? 0 : 0.18;
-          const elder = pod[0];
-          const elderPoint = { x: elder.x * width, y: elder.y * height };
-          const own = { x: orca.x * width, y: orca.y * height };
-          const orbit = Math.sin(t * orca.speed + orca.phase) * 70;
-          const desiredX = target.x + Math.cos(t * orca.speed * 1.8 + orca.phase) * (80 + orbit * 0.3);
-          const desiredY = target.y + Math.sin(t * orca.speed * 1.4 + orca.phase) * (48 + orbit * 0.16);
-          const socialX = desiredX * (1 - elderBias) + elderPoint.x * elderBias;
-          const socialY = desiredY * (1 - elderBias) + elderPoint.y * elderBias;
-          const approach = orca.age < 8 ? 0.014 : 0.008 + targetPlace.pull * 0.003;
-          orca.x = (own.x + (socialX - own.x) * approach) / width;
-          orca.y = (own.y + (socialY - own.y) * approach) / height;
-          orca.heading = Math.atan2(socialY - own.y, socialX - own.x);
-
-          if (index === 3) {
-            const teacher = pod[1];
-            orca.x = orca.x * 0.965 + (teacher.x + Math.sin(t * 0.003) * 0.035) * 0.035;
-            orca.y = orca.y * 0.965 + (teacher.y + Math.cos(t * 0.002) * 0.026) * 0.035;
-          }
-
-          wakes.push({
-            x: orca.x * width,
-            y: orca.y * height,
-            mark: orca.mark,
-            life: 1,
-            size: 6 * orca.size
-          });
+        route.forEach((point, index) => {
+          const x = point.x * width;
+          const y = point.y * height;
+          if (index === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
         });
+        ctx.stroke();
+        ctx.setLineDash([]);
 
-        if (t - lastEventAt > 5200) {
-          const event = eventTemplates[(cycle + Math.floor(t / 1800)) % eventTemplates.length];
-          pushEvent(event);
-          lastEventAt = t;
-          cycle += 1;
-          cycleLabel.textContent = `cycle ${String(cycle).padStart(3, "0")}`;
-          const teacher = pod[(cycle + 1) % pod.length];
-          songRings.push({
-            x: teacher.x * width,
-            y: teacher.y * height,
-            mark: teacher.mark,
-            life: 1
-          });
-
-          if (cycle % 3 === 0) {
-            pod[2].target = (pod[2].target + 1) % places.length;
-          }
-          if (cycle % 4 === 0) {
-            pod[3].memory.push(pod[1].target);
-            pod[3].memory = [...new Set(pod[3].memory)].slice(-4);
-          }
-          if (cycle % 5 === 0) {
-            pod[5].target = (pod[5].target + 2) % places.length;
-          }
+        for (const point of route) {
+          const x = point.x * width;
+          const y = point.y * height;
+          const pulse = Math.floor(Math.sin(time * 1.4 + x) * 2);
+          ctx.fillStyle = "rgba(238, 215, 118, 0.88)";
+          ctx.fillRect(Math.floor(x) - 2 - pulse, Math.floor(y) - 2, 4 + pulse * 2, 4);
+          ctx.fillStyle = "rgba(245, 233, 161, 0.32)";
+          ctx.fillRect(Math.floor(x) - 5, Math.floor(y) + 4, 10, 1);
         }
-      }
 
-      function drawRoutes() {
-        ctx.save();
-        ctx.lineWidth = 2;
-        pod.forEach((orca) => {
-          if (!orca.memory.length) return;
-          ctx.strokeStyle = orca.mark;
-          ctx.globalAlpha = 0.16;
-          ctx.beginPath();
-          orca.memory.forEach((placeIndex, index) => {
-            const p = placeToPixel(places[placeIndex]);
-            const ox = Math.sin(routePulse + index + orca.phase) * 14;
-            const oy = Math.cos(routePulse * 0.8 + index) * 10;
-            if (index === 0) ctx.moveTo(p.x + ox, p.y + oy);
-            else ctx.lineTo(p.x + ox, p.y + oy);
-          });
-          ctx.stroke();
-        });
-        ctx.restore();
-      }
-
-      function drawWakes(delta) {
-        ctx.save();
-        for (let i = wakes.length - 1; i >= 0; i -= 1) {
-          const wake = wakes[i];
-          wake.life -= delta * 0.00048;
-          if (wake.life <= 0) {
-            wakes.splice(i, 1);
-            continue;
+        for (const orca of pod) {
+          for (const memory of orca.memory) {
+            const age = clamp(1 - (time - memory.t) / 35, 0, 1);
+            ctx.fillStyle = "rgba(236, 215, 122, " + (0.16 + age * 0.36).toFixed(3) + ")";
+            ctx.fillRect(Math.floor(memory.x) - 1, Math.floor(memory.y) - 1, 3, 3);
           }
-          ctx.globalAlpha = wake.life * 0.23;
-          ctx.fillStyle = wake.mark;
-          pixelDiamond(wake.x, wake.y, wake.size * (1.15 - wake.life));
         }
         ctx.restore();
       }
 
-      function drawSongRings(delta) {
+      function drawFood() {
+        for (const fish of food) {
+          const shine = Math.sin(time * 3 + fish.shimmer) > 0 ? 0.85 : 0.42;
+          ctx.fillStyle = "rgba(206, 239, 202, " + shine + ")";
+          ctx.fillRect(Math.floor(fish.x), Math.floor(fish.y), 2, 1);
+          if (fish.id % 4 === 0) ctx.fillRect(Math.floor(fish.x) + 2, Math.floor(fish.y) - 1, 1, 1);
+        }
+      }
+
+      function drawShip() {
+        if (ship.x < -40 || ship.x > width + 40) return;
+        ctx.fillStyle = "rgba(231, 112, 76, 0.18)";
+        ctx.fillRect(Math.floor(ship.x) - 33, Math.floor(ship.y), 66, 22);
+        ctx.fillStyle = "rgba(231, 112, 76, 0.48)";
+        ctx.fillRect(Math.floor(ship.x) - 9, Math.floor(ship.y) - 2, 18, 2);
+        for (let ring = 1; ring < 5; ring += 1) {
+          ctx.strokeStyle = "rgba(231, 112, 76, " + (0.2 / ring).toFixed(3) + ")";
+          ctx.strokeRect(Math.floor(ship.x) - ring * 12, Math.floor(ship.y) + ring * 4, ring * 24, ring * 7);
+        }
+      }
+
+      function drawRelationships() {
         ctx.save();
-        for (let i = songRings.length - 1; i >= 0; i -= 1) {
-          const ring = songRings[i];
-          ring.life -= delta * 0.00032;
-          if (ring.life <= 0) {
-            songRings.splice(i, 1);
-            continue;
+        for (const orca of pod) {
+          for (const other of pod) {
+            if (other.id <= orca.id) continue;
+            const trust = orca.trust.get(other.id) || 0;
+            const dist = Math.hypot(orca.x - other.x, orca.y - other.y);
+            if (trust > 0.58 && dist < 54) {
+              ctx.strokeStyle = "rgba(118, 225, 180, " + (0.1 + trust * 0.28).toFixed(3) + ")";
+              ctx.lineWidth = trust > 0.78 ? 2 : 1;
+              ctx.beginPath();
+              ctx.moveTo(Math.floor(orca.x), Math.floor(orca.y));
+              ctx.lineTo(Math.floor(other.x), Math.floor(other.y));
+              ctx.stroke();
+            }
           }
-          const radius = (1 - ring.life) * 120;
-          ctx.globalAlpha = ring.life * 0.52;
-          ctx.strokeStyle = ring.mark;
-          ctx.lineWidth = 2;
-          ctx.setLineDash([6, 9]);
-          ctx.beginPath();
-          ctx.arc(ring.x, ring.y, radius, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.setLineDash([]);
         }
         ctx.restore();
       }
 
-      function drawKinLines() {
-        ctx.save();
-        pod.forEach((orca) => {
-          orca.kin.forEach((kinName) => {
-            const other = pod.find((candidate) => candidate.name === kinName);
-            if (!other) return;
-            ctx.strokeStyle = orca.mark;
-            ctx.globalAlpha = 0.12;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(orca.x * width, orca.y * height);
-            ctx.lineTo(other.x * width, other.y * height);
-            ctx.stroke();
-          });
-        });
-        ctx.restore();
+      function drawPulses() {
+        for (const pulse of pulses) {
+          const alpha = clamp(1 - pulse.r / pulse.max, 0, 1);
+          ctx.strokeStyle = pulse.color === "lesson"
+            ? "rgba(236, 215, 122, " + (alpha * 0.7).toFixed(3) + ")"
+            : "rgba(178, 154, 246, " + (alpha * 0.65).toFixed(3) + ")";
+          ctx.lineWidth = 1;
+          ctx.strokeRect(Math.floor(pulse.x - pulse.r), Math.floor(pulse.y - pulse.r * 0.58), Math.floor(pulse.r * 2), Math.floor(pulse.r * 1.16));
+        }
       }
 
-      function drawOrca(orca, index) {
-        const x = Math.round(orca.x * width);
-        const y = Math.round(orca.y * height);
-        const scale = Math.max(0.82, Math.min(1.4, orca.size * (width < 600 ? 0.82 : 1)));
-        const flip = Math.cos(orca.heading || 0) < 0 ? -1 : 1;
-        const breath = Math.sin(t * 0.004 + index) * 2;
+      function drawPod() {
+        for (const orca of pod) {
+          drawOrca(orca);
+        }
+      }
 
+      function drawOrca(orca) {
+        const angle = Math.atan2(orca.vy, orca.vx || 0.01);
+        const scale = orca.role === "calf" ? 0.72 : orca.role === "matriarch" || orca.role === "elder" ? 1.18 : 1;
+        const selected = selectedId === orca.id;
         ctx.save();
-        ctx.translate(x, y);
-        ctx.scale(flip * scale, scale);
-        ctx.rotate(Math.sin(orca.heading || 0) * 0.08);
+        ctx.translate(Math.floor(orca.x), Math.floor(orca.y));
+        ctx.rotate(angle);
+        ctx.scale(scale, scale);
 
-        ctx.fillStyle = "oklch(7% 0.022 246)";
-        ctx.fillRect(-25, -8, 44, 16);
-        ctx.fillRect(-16, -14, 22, 6);
-        ctx.fillRect(4, -17, 7, 10);
-        ctx.fillRect(16, -5, 13, 10);
-        ctx.fillRect(-32, -3, 10, 6);
-        ctx.fillRect(-39, -8, 8, 4);
-        ctx.fillRect(-39, 4, 8, 4);
-
-        ctx.fillStyle = palette.foam;
-        ctx.fillRect(-8, -3, 20, 7);
-        ctx.fillRect(14, -2, 7, 4);
-        ctx.fillRect(-19, -6, 7, 4);
-
-        ctx.fillStyle = orca.mark;
-        ctx.fillRect(-3, -20 - breath * 0.2, 5, 4);
-        ctx.fillRect(22, -10, 4, 3);
-
+        ctx.fillStyle = selected ? "rgba(239, 215, 114, 0.42)" : "rgba(210, 243, 236, 0.16)";
+        ctx.fillRect(-9, -7, 18, 14);
+        ctx.fillStyle = "#111a22";
+        ctx.fillRect(-8, -3, 15, 6);
+        ctx.fillRect(-4, -6, 7, 3);
+        ctx.fillRect(6, -2, 5, 4);
+        ctx.fillRect(-12, -2, 4, 4);
+        ctx.fillStyle = "#eef5ee";
+        ctx.fillRect(-3, -2, 7, 3);
+        ctx.fillRect(4, -4, 2, 2);
+        ctx.fillStyle = roleColor(orca.role);
+        ctx.fillRect(-1, -8, 3, 2);
         ctx.restore();
 
-        drawDialect(x, y, orca, index);
+        if (selected) {
+          ctx.strokeStyle = "rgba(239, 215, 114, 0.8)";
+          ctx.strokeRect(Math.floor(orca.x - 10), Math.floor(orca.y - 10), 20, 20);
+        }
       }
 
-      function drawDialect(x, y, orca, index) {
-        const beat = Math.floor((t * 0.006 + index * 2) % 18);
-        ctx.save();
-        orca.dialect.forEach((note, noteIndex) => {
-          if (!note) return;
-          const lit = beat === noteIndex * 3 || beat === noteIndex * 3 + 1;
-          ctx.fillStyle = lit ? orca.mark : "oklch(86% 0.025 205 / 0.4)";
-          ctx.globalAlpha = lit ? 0.92 : 0.32;
-          ctx.fillRect(Math.round(x - 18 + noteIndex * 8), Math.round(y + 17), 4, 4);
-        });
-        ctx.restore();
+      function drawLabels() {
+        ctx.font = "8px ui-rounded, system-ui, sans-serif";
+        ctx.textBaseline = "top";
+        for (const orca of pod) {
+          if (orca.role === "calf" || orca.role === "matriarch" || selectedId === orca.id) {
+            ctx.fillStyle = selectedId === orca.id ? "rgba(247, 226, 134, 0.95)" : "rgba(221, 239, 236, 0.78)";
+            ctx.fillText(orca.name, Math.floor(orca.x + 9), Math.floor(orca.y - 9));
+          }
+        }
       }
 
-      function frame(now) {
-        const rawDelta = Math.min(40, now - lastFrame);
-        const delta = paused ? 0 : rawDelta;
-        lastFrame = now;
-        t += delta;
-
-        drawBackground();
-        if (!paused) updatePod(delta);
-        drawWakes(rawDelta);
-        drawRoutes();
-        drawKinLines();
-        drawSongRings(rawDelta);
-        pod.forEach(drawOrca);
-
-        requestAnimationFrame(frame);
+      function roleColor(role) {
+        return {
+          matriarch: "#e9d366",
+          elder: "#d4b6ee",
+          teacher: "#8ee8b8",
+          guardian: "#e67552",
+          scout: "#74cbea",
+          calf: "#f2f1c7",
+          aunt: "#a9d68c"
+        }[role] || "#d7ebef";
       }
 
-      tempoButton.addEventListener("click", () => {
-        paused = !paused;
-        setTempoIcon();
+      function updateSignals() {
+        const sorted = [...pod].sort((a, b) => {
+          const roleRank = { matriarch: 0, teacher: 1, guardian: 2, elder: 3, scout: 4, aunt: 5, calf: 6 };
+          return roleRank[a.role] - roleRank[b.role];
+        }).slice(0, 5);
+
+        signalsNode.innerHTML = sorted.map((orca) => {
+          const closest = closestTrusted(orca);
+          const learned = orca.lessons.size;
+          return [
+            "<div class=\"signal\">",
+            "<strong>" + escapeHtml(orca.name) + "</strong>",
+            "<span class=\"role\">" + escapeHtml(orca.role) + "</span>",
+            "<span>" + learned + " learned routes, closest bond: " + escapeHtml(closest.name) + "</span>",
+            "<span>" + Math.round(closest.trust * 100) + "%</span>",
+            "</div>"
+          ].join("");
+        }).join("");
+      }
+
+      function updateInspector() {
+        const selected = pod.find((orca) => orca.id === selectedId);
+        if (!selected) {
+          inspectorTitle.textContent = "Click an orca to listen closer";
+          inspectorBody.textContent = "Bright knots are remembered places. Green lines are trusted bonds. Purple pulses are dialect calls moving through the pod.";
+          return;
+        }
+        const closest = closestTrusted(selected);
+        const lessonList = [...selected.lessons].slice(0, 4).join(", ") || "still learning";
+        inspectorTitle.textContent = selected.name + ", " + selected.role + ", age " + selected.age;
+        inspectorBody.textContent = selected.name + " speaks " + selected.dialect + ", trusts " + closest.name + " most, and carries: " + lessonList + ".";
+      }
+
+      function addEvent(stamp, text) {
+        events.unshift({ stamp, text });
+        events = events.slice(0, 5);
+        eventsNode.innerHTML = events.map((event) => {
+          return "<li><time>" + escapeHtml(event.stamp) + "</time><span>" + escapeHtml(event.text) + "</span></li>";
+        }).join("");
+      }
+
+      function closestTrusted(orca) {
+        let best = { name: "none", trust: 0 };
+        for (const [id, trust] of orca.trust.entries()) {
+          if (trust > best.trust) {
+            const other = pod.find((candidate) => candidate.id === id);
+            if (other) best = { name: other.name, trust };
+          }
+        }
+        return best;
+      }
+
+      function centerOf(items) {
+        if (!items.length) return { x: width * 0.5, y: height * 0.5 };
+        return {
+          x: items.reduce((sum, item) => sum + item.x, 0) / items.length,
+          y: items.reduce((sum, item) => sum + item.y, 0) / items.length
+        };
+      }
+
+      function clock() {
+        const minutes = Math.floor(time * 1.8);
+        const hour = String(Math.floor(minutes / 60)).padStart(2, "0");
+        const minute = String(minutes % 60).padStart(2, "0");
+        return hour + ":" + minute;
+      }
+
+      function noise(value) {
+        return (Math.sin(value * 12.9898) * 43758.5453) % 1;
+      }
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (char) => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          "\"": "&quot;",
+          "'": "&#39;"
+        }[char]));
+      }
+
+      function tick(now) {
+        if (!tick.last) tick.last = now;
+        const dt = Math.min(0.08, (now - tick.last) / 1000);
+        tick.last = now;
+        if (!paused) {
+          update(dt);
+        }
+        draw();
+        if (followMatriarch) {
+          const matriarch = pod.find((orca) => orca.role === "matriarch");
+          selectedId = matriarch.id;
+          updateInspector();
+        }
+        requestAnimationFrame(tick);
+      }
+
+      canvas.addEventListener("click", (event) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * width;
+        const y = ((event.clientY - rect.top) / rect.height) * height;
+        let nearest = null;
+        let nearestDistance = 18;
+        for (const orca of pod) {
+          const distance = Math.hypot(orca.x - x, orca.y - y);
+          if (distance < nearestDistance) {
+            nearest = orca;
+            nearestDistance = distance;
+          }
+        }
+        selectedId = nearest ? nearest.id : null;
+        followMatriarch = false;
+        focusButton.setAttribute("aria-pressed", "false");
+        updateInspector();
       });
 
-      window.addEventListener("resize", resize);
+      pauseButton.addEventListener("click", () => {
+        paused = !paused;
+        pauseButton.textContent = paused ? "Resume" : "Pause";
+        pauseButton.setAttribute("aria-pressed", String(paused));
+      });
+
+      focusButton.addEventListener("click", () => {
+        followMatriarch = !followMatriarch;
+        focusButton.setAttribute("aria-pressed", String(followMatriarch));
+        if (!followMatriarch) selectedId = null;
+        updateInspector();
+      });
+
+      resetButton.addEventListener("click", () => {
+        resetWorld();
+      });
+
+      window.addEventListener("resize", () => {
+        resize();
+        resetWorld();
+      });
+
       resize();
-      seedInterface();
-      requestAnimationFrame(frame);
+      resetWorld();
+      requestAnimationFrame(tick);
     })();
   </script>
 </body>
