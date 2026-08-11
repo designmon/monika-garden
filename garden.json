@@ -51,11 +51,12 @@
       "door": "plots/b2/growth/index.html"
     },
     "b3": {
-      "stage": 1,
+      "stage": 3,
       "title": "Visual Voice Calendar",
       "planted": "2026-08-10",
-      "last_tended": null,
-      "note": "freshly planted"
+      "last_tended": "2026-08-11T06:23:53Z",
+      "note": "voice calendar now gathers entries into month weather",
+      "door": "plots/b3/growth/index.html"
     },
     "b4": {
       "stage": 1,

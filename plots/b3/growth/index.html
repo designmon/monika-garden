@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Visual Voice Calendar</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: oklch(96% 0.012 88);
+      --paper-2: oklch(91% 0.016 92);
+      --ink: oklch(23% 0.027 252);
+      --muted: oklch(48% 0.032 248);
+      --line: oklch(78% 0.026 93);
+      --warm: oklch(76% 0.15 73);
+      --blue: oklch(63% 0.13 223);
+      --moss: oklch(59% 0.115 143);
+      --rose: oklch(62% 0.15 18);
+      --violet: oklch(54% 0.14 297);
+      --shadow: 0 1rem 3rem oklch(31% 0.04 245 / 0.16);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(115deg, oklch(97% 0.01 87) 0 34%, transparent 34%),
+        linear-gradient(168deg, transparent 0 58%, oklch(89% 0.038 176) 58% 100%),
+        var(--paper);
+    }
+
+    button,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      border-radius: 0.6rem;
+      min-height: 2.6rem;
+      padding: 0 0.9rem;
+      color: var(--ink);
+      background: oklch(98% 0.01 90 / 0.88);
+      cursor: pointer;
+      transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), border-color 180ms ease, background 180ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      border-color: oklch(58% 0.08 223);
+      background: oklch(97% 0.018 219);
+    }
+
+    button:focus-visible,
+    textarea:focus-visible,
+    .day:focus-visible {
+      outline: 3px solid oklch(65% 0.12 223 / 0.45);
+      outline-offset: 3px;
+    }
+
+    .primary {
+      border-color: oklch(29% 0.04 252);
+      background: var(--ink);
+      color: oklch(97% 0.011 88);
+      font-weight: 700;
+    }
+
+    .primary:hover {
+      background: oklch(31% 0.06 252);
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(20rem, 0.72fr) minmax(30rem, 1.28fr);
+    }
+
+    .studio {
+      min-height: 100vh;
+      padding: 1.2rem clamp(1rem, 3vw, 3rem) 2.4rem;
+      border-right: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, oklch(98% 0.011 88 / 0.86), oklch(92% 0.016 96 / 0.82)),
+        repeating-linear-gradient(90deg, oklch(25% 0.03 252 / 0.08) 0 1px, transparent 1px 4.2rem);
+    }
+
+    .back {
+      display: inline-flex;
+      margin-bottom: 3.2rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    h1 {
+      margin: 0 0 0.75rem;
+      max-width: 10ch;
+      font-size: 2.35rem;
+      line-height: 1.03;
+      letter-spacing: 0;
+    }
+
+    .lede {
+      margin: 0 0 2rem;
+      max-width: 33rem;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 1.02rem;
+    }
+
+    .current {
+      display: grid;
+      gap: 1.1rem;
+      max-width: 36rem;
+    }
+
+    .date-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .date-line strong {
+      font-size: 1.05rem;
+    }
+
+    .date-line span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 9.5rem;
+      resize: vertical;
+      border: 1px solid oklch(73% 0.034 93);
+      border-radius: 0.8rem;
+      padding: 1rem;
+      color: var(--ink);
+      background: oklch(98% 0.012 88 / 0.82);
+      line-height: 1.45;
+      box-shadow: inset 0 1px 0 oklch(100% 0.005 88 / 0.68);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .status {
+      min-height: 1.3rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .readout {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+      margin-top: 0.4rem;
+    }
+
+    .measure {
+      border: 1px solid var(--line);
+      border-radius: 0.7rem;
+      padding: 0.7rem;
+      background: oklch(97% 0.013 90 / 0.6);
+    }
+
+    .measure span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .measure strong {
+      display: block;
+      margin-top: 0.24rem;
+      font-size: 1rem;
+      line-height: 1.1;
+    }
+
+    .calendar {
+      position: relative;
+      min-height: 100vh;
+      padding: clamp(1rem, 2.4vw, 2.6rem);
+      display: grid;
+      align-content: center;
+      gap: 1rem;
+      overflow: hidden;
+    }
+
+    .month-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .month-head h2 {
+      margin: 0;
+      font-size: 1.45rem;
+      letter-spacing: 0;
+    }
+
+    .month-head p {
+      margin: 0.2rem 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .swatch {
+      width: 0.8rem;
+      height: 0.8rem;
+      border-radius: 50%;
+      background: var(--tone);
+    }
+
+    .weekdays,
+    .grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+
+    .flowfield {
+      position: absolute;
+      z-index: 1;
+      inset: 9.5rem clamp(1rem, 2.4vw, 2.6rem) clamp(1rem, 2.4vw, 2.6rem);
+      pointer-events: none;
+      opacity: 0.78;
+      mix-blend-mode: multiply;
+    }
+
+    .flowfield svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .weekdays {
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .grid {
+      min-height: min(64vh, 44rem);
+    }
+
+    .day {
+      position: relative;
+      min-height: 7.1rem;
+      border: 1px solid oklch(72% 0.028 94);
+      border-radius: 0.65rem;
+      overflow: hidden;
+      background: oklch(97% 0.012 88 / 0.74);
+      isolation: isolate;
+      cursor: pointer;
+      transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .day:hover,
+    .day[aria-selected="true"] {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+      border-color: oklch(51% 0.08 223);
+      z-index: 2;
+    }
+
+    .day.blank {
+      border-style: dashed;
+      background: oklch(94% 0.01 91 / 0.4);
+      pointer-events: none;
+    }
+
+    .day.today {
+      border-color: oklch(32% 0.05 252);
+    }
+
+    .number {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.58rem;
+      z-index: 3;
+      font-weight: 760;
+      font-size: 0.86rem;
+      color: oklch(27% 0.033 252);
+    }
+
+    .terrain {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: center;
+      gap: var(--gap, 0.18rem);
+      padding: 1.8rem 0.48rem 0.62rem;
+      color: var(--tone, var(--muted));
+      font-size: var(--scale, 0.62rem);
+      line-height: 0.92;
+      font-weight: 720;
+      opacity: 0.9;
+      transform: rotate(var(--tilt, 0deg));
+    }
+
+    .terrain span {
+      display: inline-block;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      transform: translateY(var(--rise, 0));
+    }
+
+    .day::before {
+      content: "";
+      position: absolute;
+      inset: auto -12% -22% -12%;
+      height: var(--mass, 45%);
+      background:
+        linear-gradient(180deg, transparent, var(--mist, oklch(80% 0.04 91 / 0.36))),
+        radial-gradient(ellipse at 48% 0, var(--tone-soft, oklch(76% 0.09 223 / 0.45)), transparent 62%);
+      z-index: -1;
+    }
+
+    .day::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(var(--angle, 108deg), transparent 0 0.42rem, var(--scratch, oklch(22% 0.03 252 / 0.08)) 0.42rem 0.48rem);
+      mix-blend-mode: multiply;
+      opacity: var(--scratch-opacity, 0.15);
+      pointer-events: none;
+    }
+
+    .empty-note {
+      position: absolute;
+      inset: auto 0.52rem 0.62rem;
+      color: oklch(54% 0.028 248);
+      font-size: 0.76rem;
+      line-height: 1.2;
+    }
+
+    @media (max-width: 860px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .studio {
+        min-height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .calendar {
+        min-height: auto;
+      }
+
+      .grid {
+        min-height: auto;
+      }
+
+      .day {
+        min-height: 5.75rem;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .month-head,
+      .date-line {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .legend {
+        justify-content: flex-start;
+      }
+
+      .weekdays {
+        display: none;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .day.blank {
+        display: none;
+      }
+
+      .readout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="studio" aria-label="Voice note studio">
+      <a class="back" href="../../../viewer/">Back to garden</a>
+      <h1>Visual Voice Calendar</h1>
+      <p class="lede">Speak or write one small observation. The day turns it into weather: charged words gather color, ordinary words make the field, and the month remembers the texture.</p>
+
+      <div class="current">
+        <div class="date-line">
+          <strong id="selectedDate">Today</strong>
+          <span id="storedCount">0 days stored</span>
+        </div>
+
+        <textarea id="note" spellcheck="true" placeholder="Say what the day sounded like. A detail, a pressure, a bright thing, a sentence you want to keep."></textarea>
+
+        <div class="actions">
+          <button class="primary" id="listen" type="button">Start voice note</button>
+          <button id="save" type="button">Save day</button>
+          <button id="sample" type="button">Use a sample</button>
+          <button id="clear" type="button">Clear day</button>
+        </div>
+
+        <div class="status" id="status" role="status"></div>
+
+        <div class="readout" aria-label="Generated voice weather">
+          <div class="measure">
+            <span>Weather</span>
+            <strong id="weather">quiet field</strong>
+          </div>
+          <div class="measure">
+            <span>Charge</span>
+            <strong id="charge">0%</strong>
+          </div>
+          <div class="measure">
+            <span>Motif</span>
+            <strong id="motif">plain words</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="calendar" aria-label="Typographic month calendar">
+      <div class="month-head">
+        <div>
+          <h2 id="monthName">Month</h2>
+          <p id="monthMood">A month begins as paper, then takes weather from the words.</p>
+        </div>
+        <div class="legend" aria-label="Mood colors">
+          <span><i class="swatch" style="--tone: var(--blue)"></i>clear</span>
+          <span><i class="swatch" style="--tone: var(--warm)"></i>warm</span>
+          <span><i class="swatch" style="--tone: var(--rose)"></i>charged</span>
+          <span><i class="swatch" style="--tone: var(--moss)"></i>rooted</span>
+        </div>
+      </div>
+      <div class="weekdays" aria-hidden="true">
+        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+      </div>
+      <div class="flowfield" id="flowfield" aria-hidden="true"></div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+
+  <script>
+    const storeKey = "visualVoiceCalendar.v1";
+    const note = document.querySelector("#note");
+    const grid = document.querySelector("#grid");
+    const statusLine = document.querySelector("#status");
+    const selectedDate = document.querySelector("#selectedDate");
+    const storedCount = document.querySelector("#storedCount");
+    const weather = document.querySelector("#weather");
+    const charge = document.querySelector("#charge");
+    const motif = document.querySelector("#motif");
+    const monthName = document.querySelector("#monthName");
+    const monthMood = document.querySelector("#monthMood");
+    const flowfield = document.querySelector("#flowfield");
+    const listenButton = document.querySelector("#listen");
+
+    const today = new Date();
+    let active = isoDay(today);
+    let listening = false;
+    let recognition = null;
+    let recordingBase = "";
+    let entries = loadEntries();
+
+    const sampleText = "I noticed the morning arrive slowly. Coffee, tabs, one tense sentence, then a little clean light on the desk. I felt rushed, but the good part stayed.";
+
+    const chargedWords = new Set(["tense", "rushed", "sharp", "afraid", "angry", "heavy", "sad", "stuck", "tired", "pressure", "urgent", "alone", "messy", "hard"]);
+    const brightWords = new Set(["light", "clear", "good", "soft", "laugh", "bright", "open", "kind", "easy", "alive", "warm", "clean", "calm"]);
+    const rootedWords = new Set(["desk", "coffee", "walk", "home", "window", "hands", "morning", "garden", "room", "rain", "paper", "street", "voice"]);
+
+    function isoDay(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function loadEntries() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveEntries() {
+      localStorage.setItem(storeKey, JSON.stringify(entries));
+    }
+
+    function wordsFrom(text) {
+      return (text.toLowerCase().match(/[a-z0-9']+/g) || []).filter(Boolean);
+    }
+
+    function analyze(text) {
+      const words = wordsFrom(text);
+      const total = Math.max(words.length, 1);
+      const charged = words.filter((word) => chargedWords.has(word)).length;
+      const bright = words.filter((word) => brightWords.has(word)).length;
+      const rooted = words.filter((word) => rootedWords.has(word)).length;
+      const unique = new Set(words).size;
+      const chargeScore = Math.min(100, Math.round(((charged * 2.3 + bright * 1.2 + rooted * 0.7) / total) * 100));
+
+      let tone = "var(--blue)";
+      let toneSoft = "oklch(73% 0.09 223 / 0.38)";
+      let label = "clear weather";
+      let motifLabel = "open field";
+
+      if (charged > bright && charged >= rooted) {
+        tone = "var(--rose)";
+        toneSoft = "oklch(66% 0.13 18 / 0.38)";
+        label = "charged front";
+        motifLabel = "rupture lines";
+      } else if (bright >= charged && bright > rooted) {
+        tone = "var(--warm)";
+        toneSoft = "oklch(79% 0.14 73 / 0.42)";
+        label = "warm clearing";
+        motifLabel = "sun text";
+      } else if (rooted > 0) {
+        tone = "var(--moss)";
+        toneSoft = "oklch(65% 0.11 143 / 0.38)";
+        label = "rooted ground";
+        motifLabel = "low terrain";
+      } else if (unique > 16) {
+        tone = "var(--violet)";
+        toneSoft = "oklch(61% 0.12 297 / 0.34)";
+        label = "moving system";
+        motifLabel = "word current";
+      }
+
+      return { words, chargeScore, tone, toneSoft, label, motifLabel, charged, bright, rooted };
+    }
+
+    function buildTerrain(day, text) {
+      const analysis = analyze(text);
+      const source = analysis.words.length ? analysis.words : ["unspoken", "field", "waiting"];
+      const fragments = [];
+      const repeat = text ? Math.min(34, Math.max(10, source.length * 2)) : 8;
+
+      for (let index = 0; index < repeat; index += 1) {
+        const word = source[index % source.length];
+        const span = document.createElement("span");
+        span.textContent = word;
+        const lift = Math.sin((index + day) * 1.7) * (analysis.chargeScore / 11);
+        span.style.setProperty("--rise", `${lift.toFixed(1)}px`);
+        fragments.push(span);
+      }
+
+      return { analysis, fragments };
+    }
+
+    function wordSignature(text) {
+      const stop = new Set(["the", "and", "that", "this", "with", "from", "into", "then", "what", "like", "just", "today"]);
+      const counts = new Map();
+      wordsFrom(text).forEach((word) => {
+        if (word.length < 4 || stop.has(word)) return;
+        counts.set(word, (counts.get(word) || 0) + 1);
+      });
+      return [...counts.entries()]
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        .slice(0, 10)
+        .map(([word]) => word);
+    }
+
+    function monthDates() {
+      const year = today.getFullYear();
+      const month = today.getMonth();
+      const first = new Date(year, month, 1);
+      const days = new Date(year, month + 1, 0).getDate();
+      const offset = (first.getDay() + 6) % 7;
+      return { year, month, days, offset };
+    }
+
+    function render() {
+      const { year, month, days, offset } = monthDates();
+      monthName.textContent = new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" }).format(today);
+      grid.replaceChildren();
+      renderFlowfield(year, month, days, offset);
+
+      for (let i = 0; i < offset; i += 1) {
+        const blank = document.createElement("div");
+        blank.className = "day blank";
+        grid.append(blank);
+      }
+
+      for (let day = 1; day <= days; day += 1) {
+        const date = new Date(year, month, day);
+        const key = isoDay(date);
+        const text = entries[key] || "";
+        const cell = document.createElement("button");
+        cell.type = "button";
+        cell.className = "day";
+        cell.setAttribute("aria-label", `Open ${key}`);
+        cell.setAttribute("aria-selected", String(key === active));
+        if (key === isoDay(today)) cell.classList.add("today");
+
+        const number = document.createElement("span");
+        number.className = "number";
+        number.textContent = String(day);
+
+        const terrain = document.createElement("div");
+        terrain.className = "terrain";
+        const built = buildTerrain(day, text);
+        built.fragments.forEach((fragment) => terrain.append(fragment));
+
+        const density = Math.min(1, built.analysis.words.length / 26);
+        cell.style.setProperty("--tone", built.analysis.tone);
+        cell.style.setProperty("--tone-soft", built.analysis.toneSoft);
+        cell.style.setProperty("--mist", built.analysis.toneSoft);
+        cell.style.setProperty("--mass", `${32 + density * 48}%`);
+        cell.style.setProperty("--scale", `${0.58 + density * 0.2}rem`);
+        cell.style.setProperty("--gap", `${0.26 - density * 0.12}rem`);
+        cell.style.setProperty("--tilt", `${(built.analysis.charged - built.analysis.bright) * 1.6}deg`);
+        cell.style.setProperty("--angle", `${92 + built.analysis.chargeScore}deg`);
+        cell.style.setProperty("--scratch-opacity", String(0.09 + built.analysis.chargeScore / 260));
+
+        cell.append(number, terrain);
+        if (!text) {
+          const empty = document.createElement("span");
+          empty.className = "empty-note";
+          empty.textContent = key === active ? "waiting for a voice note" : "quiet";
+          cell.append(empty);
+        }
+
+        cell.addEventListener("click", () => {
+          active = key;
+          note.value = entries[active] || "";
+          updateReadout();
+          render();
+        });
+
+        grid.append(cell);
+      }
+
+      updateSummary();
+      updateDateLine();
+    }
+
+    function renderFlowfield(year, month, days, offset) {
+      const written = [];
+      for (let day = 1; day <= days; day += 1) {
+        const key = isoDay(new Date(year, month, day));
+        const text = entries[key] || "";
+        if (!text.trim()) continue;
+        const slot = offset + day - 1;
+        written.push({
+          day,
+          text,
+          analysis: analyze(text),
+          col: slot % 7,
+          row: Math.floor(slot / 7)
+        });
+      }
+
+      if (!written.length) {
+        flowfield.replaceChildren();
+        return;
+      }
+
+      const rows = Math.ceil((offset + days) / 7);
+      const width = 700;
+      const height = Math.max(420, rows * 116);
+      const cellW = width / 7;
+      const cellH = height / rows;
+      const words = wordSignature(Object.values(entries).join(" "));
+
+      const pressure = written.map((item, index) => {
+        const x = item.col * cellW + cellW * 0.5;
+        const y = item.row * cellH + cellH * 0.55;
+        const next = written[index + 1] || written[index - 1] || item;
+        const nx = next.col * cellW + cellW * 0.5;
+        const ny = next.row * cellH + cellH * 0.55;
+        const strength = Math.min(1, item.text.length / 360 + item.analysis.chargeScore / 140);
+        return `
+          <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(30 + strength * 62).toFixed(1)}" fill="${item.analysis.tone}" opacity="${(0.11 + strength * 0.14).toFixed(2)}"/>
+          <path d="M ${x.toFixed(1)} ${y.toFixed(1)} C ${(x + cellW * 0.42).toFixed(1)} ${(y - cellH * 0.28).toFixed(1)}, ${(nx - cellW * 0.32).toFixed(1)} ${(ny + cellH * 0.22).toFixed(1)}, ${nx.toFixed(1)} ${ny.toFixed(1)}" stroke="${item.analysis.tone}" stroke-width="${(1.5 + strength * 5.5).toFixed(1)}" fill="none" opacity="0.22" stroke-linecap="round"/>
+        `;
+      }).join("");
+
+      const traces = words.map((word, index) => {
+        const x = 26 + ((index * 131) % (width - 96));
+        const y = 42 + Math.floor((index * 131) / Math.max(1, width - 96)) * 54 + (index % 2) * 19;
+        return `<text x="${x}" y="${Math.min(height - 24, y)}" fill="oklch(24% 0.027 252)" opacity="0.14" font-size="${18 + (index % 4) * 4}" font-family="Georgia, serif">${word}</text>`;
+      }).join("");
+
+      flowfield.innerHTML = `
+        <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="presentation">
+          ${pressure}
+          ${traces}
+        </svg>`;
+    }
+
+    function updateDateLine() {
+      const date = new Date(`${active}T12:00:00`);
+      selectedDate.textContent = new Intl.DateTimeFormat(undefined, { weekday: "long", month: "long", day: "numeric" }).format(date);
+      const count = Object.keys(entries).length;
+      storedCount.textContent = `${count} ${count === 1 ? "day" : "days"} stored`;
+    }
+
+    function updateSummary() {
+      const saved = Object.values(entries).join(" ");
+      if (!saved.trim()) {
+        monthMood.textContent = "A month begins as paper, then takes weather from the words.";
+        return;
+      }
+      const analysis = analyze(saved);
+      monthMood.textContent = `${analysis.label} across ${Object.keys(entries).length} saved ${Object.keys(entries).length === 1 ? "day" : "days"}.`;
+    }
+
+    function updateReadout() {
+      const analysis = analyze(note.value);
+      weather.textContent = analysis.label;
+      charge.textContent = `${analysis.chargeScore}%`;
+      motif.textContent = analysis.motifLabel;
+      updateDateLine();
+    }
+
+    function saveActive() {
+      const value = note.value.trim();
+      if (value) {
+        entries[active] = value;
+        statusLine.textContent = "Saved. The month redrew around this note.";
+      } else {
+        delete entries[active];
+        statusLine.textContent = "Cleared. This day is paper again.";
+      }
+      saveEntries();
+      updateReadout();
+      render();
+    }
+
+    function setupSpeech() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        listenButton.disabled = true;
+        listenButton.textContent = "Voice unavailable";
+        statusLine.textContent = "This browser has no local speech input. Writing still grows the calendar.";
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = navigator.language || "en-US";
+
+      recognition.addEventListener("result", (event) => {
+        const transcript = Array.from(event.results)
+          .map((result) => result[0].transcript.trim())
+          .join(" ")
+          .replace(/\s+/g, " ")
+          .trim();
+        note.value = [recordingBase, transcript].filter(Boolean).join(" ");
+        updateReadout();
+      });
+
+      recognition.addEventListener("end", () => {
+        listening = false;
+        listenButton.textContent = "Start voice note";
+      });
+
+      recognition.addEventListener("error", () => {
+        statusLine.textContent = "Speech stopped. Writing still works.";
+      });
+    }
+
+    listenButton.addEventListener("click", () => {
+      if (!recognition) return;
+      if (listening) {
+        recognition.stop();
+        statusLine.textContent = "Voice note paused.";
+      } else {
+        recordingBase = note.value.trim();
+        recognition.start();
+        listening = true;
+        listenButton.textContent = "Stop voice note";
+        statusLine.textContent = "Listening. Speak one observation.";
+      }
+    });
+
+    document.querySelector("#save").addEventListener("click", saveActive);
+    document.querySelector("#sample").addEventListener("click", () => {
+      note.value = sampleText;
+      statusLine.textContent = "Sample loaded. Save it or rewrite it.";
+      updateReadout();
+    });
+    document.querySelector("#clear").addEventListener("click", () => {
+      note.value = "";
+      saveActive();
+    });
+    note.addEventListener("input", updateReadout);
+
+    setupSpeech();
+    note.value = entries[active] || "";
+    updateReadout();
+    render();
+  </script>
+</body>
+</html>
