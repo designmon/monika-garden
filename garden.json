@@ -59,11 +59,12 @@
       "door": "plots/b3/growth/index.html"
     },
     "b4": {
-      "stage": 1,
+      "stage": 2,
       "title": "Style Atlas",
       "planted": "2026-08-10",
-      "last_tended": null,
-      "note": "freshly planted"
+      "last_tended": "2026-08-11T06:56:58Z",
+      "note": "style atlas sprout maps references into natural-material rules",
+      "door": "plots/b4/growth/index.html"
     },
     "c1": {
       "stage": 1,

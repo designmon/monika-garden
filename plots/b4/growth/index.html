@@ -1,0 +1,986 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Style Atlas</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: oklch(97% 0.014 82);
+      --sheet: oklch(93% 0.019 81);
+      --ink: oklch(24% 0.026 48);
+      --soft-ink: oklch(43% 0.036 52);
+      --muted: oklch(63% 0.031 59);
+      --line: oklch(82% 0.028 75);
+      --accent: oklch(47% 0.106 29);
+      --accent-soft: oklch(88% 0.047 37);
+      --sage: oklch(61% 0.071 145);
+      --sky: oklch(67% 0.067 224);
+      --plum: oklch(46% 0.067 324);
+      --shadow: 0 18px 50px oklch(38% 0.028 56 / 0.16);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(90deg, oklch(91% 0.025 77) 1px, transparent 1px) 0 0 / 28px 28px,
+        linear-gradient(0deg, oklch(91% 0.025 77) 1px, transparent 1px) 0 0 / 28px 28px,
+        var(--paper);
+      color: var(--ink);
+    }
+
+    button,
+    textarea,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: oklch(96% 0.012 82);
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 0.62rem 0.78rem;
+      cursor: pointer;
+      transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), border-color 180ms, background 180ms;
+    }
+
+    button:hover {
+      border-color: oklch(62% 0.047 48);
+      background: oklch(98% 0.015 82);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button:focus-visible,
+    textarea:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 2px solid oklch(58% 0.11 30);
+      outline-offset: 2px;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.1rem clamp(1rem, 3vw, 2.3rem);
+      border-bottom: 1px solid var(--line);
+      background: oklch(96% 0.015 82 / 0.88);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 4;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid oklch(55% 0.046 49);
+      background:
+        radial-gradient(circle at 50% 28%, oklch(80% 0.08 33) 0 9%, transparent 10%),
+        conic-gradient(from 12deg, var(--accent), var(--sage), var(--sky), var(--plum), var(--accent));
+      box-shadow: inset 0 0 0 8px var(--paper);
+      flex: 0 0 auto;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      color: var(--soft-ink);
+      font-size: 0.9rem;
+      margin-top: 0.18rem;
+    }
+
+    .garden-link {
+      color: var(--ink);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.48rem 0.72rem;
+      background: oklch(97% 0.011 82);
+      white-space: nowrap;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(240px, 0.8fr) minmax(360px, 1.35fr) minmax(260px, 0.95fr);
+      gap: 0;
+      min-height: 0;
+    }
+
+    .panel {
+      min-width: 0;
+      border-right: 1px solid var(--line);
+      background: oklch(95% 0.015 79 / 0.72);
+    }
+
+    .panel:last-child {
+      border-right: 0;
+    }
+
+    .pane-inner {
+      padding: clamp(1rem, 2.4vw, 1.7rem);
+    }
+
+    .section-label {
+      margin: 0 0 0.85rem;
+      color: var(--soft-ink);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .input-row {
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    textarea,
+    input,
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: oklch(98% 0.012 82);
+      color: var(--ink);
+    }
+
+    textarea {
+      min-height: 112px;
+      resize: vertical;
+      padding: 0.8rem;
+      line-height: 1.45;
+    }
+
+    input,
+    select {
+      padding: 0.62rem 0.7rem;
+    }
+
+    .primary {
+      border-color: oklch(45% 0.096 29);
+      background: var(--accent);
+      color: oklch(97% 0.014 82);
+      font-weight: 700;
+    }
+
+    .primary:hover {
+      background: oklch(42% 0.11 29);
+      border-color: oklch(39% 0.11 29);
+    }
+
+    .reference-list {
+      display: grid;
+      gap: 0.65rem;
+      margin-top: 1.2rem;
+    }
+
+    .reference-chip {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem;
+      align-items: center;
+      padding: 0.68rem 0.7rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: oklch(98% 0.013 82);
+      box-shadow: 0 6px 18px oklch(40% 0.018 55 / 0.07);
+    }
+
+    .reference-chip strong {
+      font-size: 0.95rem;
+    }
+
+    .reference-chip span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-top: 0.12rem;
+    }
+
+    .reference-chip button {
+      width: 2rem;
+      height: 2rem;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border-radius: 50%;
+    }
+
+    .atlas {
+      background: var(--sheet);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .atlas::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, transparent 0 49.6%, oklch(78% 0.024 71) 49.7% 50.2%, transparent 50.3%),
+        radial-gradient(circle at 20% 24%, oklch(88% 0.041 37 / 0.74), transparent 23%),
+        radial-gradient(circle at 75% 70%, oklch(84% 0.052 209 / 0.48), transparent 28%);
+      opacity: 0.8;
+    }
+
+    .atlas-inner {
+      position: relative;
+      padding: clamp(1.1rem, 2.8vw, 2rem);
+      display: grid;
+      gap: 1rem;
+      min-height: 100%;
+    }
+
+    .verdict {
+      border: 1px solid oklch(68% 0.041 55);
+      border-radius: 8px;
+      padding: clamp(1rem, 2vw, 1.35rem);
+      background: oklch(97% 0.014 82 / 0.86);
+      box-shadow: var(--shadow);
+    }
+
+    .verdict h2 {
+      margin: 0;
+      font-size: 1.55rem;
+      line-height: 1.12;
+      letter-spacing: 0;
+      max-width: 17ch;
+    }
+
+    .verdict p {
+      margin: 0.7rem 0 0;
+      max-width: 64ch;
+      line-height: 1.5;
+      color: var(--soft-ink);
+    }
+
+    .axis-board {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .axis {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: oklch(97% 0.013 82 / 0.78);
+      padding: 0.85rem;
+    }
+
+    .axis strong {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.6rem;
+      font-size: 0.88rem;
+    }
+
+    .meter {
+      height: 0.52rem;
+      margin-top: 0.62rem;
+      border-radius: 999px;
+      background: oklch(88% 0.02 76);
+      overflow: hidden;
+    }
+
+    .meter span {
+      display: block;
+      height: 100%;
+      width: var(--value);
+      border-radius: inherit;
+      background: var(--tone);
+    }
+
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(34px, 1fr));
+      gap: 0.48rem;
+      margin-top: 0.78rem;
+    }
+
+    .swatch {
+      min-height: 64px;
+      border-radius: 8px;
+      border: 1px solid oklch(58% 0.03 56 / 0.42);
+      display: flex;
+      align-items: end;
+      padding: 0.42rem;
+      color: oklch(19% 0.018 45);
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-shadow: 0 1px 0 oklch(98% 0.01 80 / 0.45);
+    }
+
+    .ingredient-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .ingredient {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.85rem;
+      background: oklch(97% 0.013 82 / 0.78);
+      min-height: 144px;
+    }
+
+    .ingredient h3 {
+      margin: 0 0 0.55rem;
+      font-size: 0.98rem;
+      letter-spacing: 0;
+    }
+
+    .ingredient ul,
+    .buy-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.42rem;
+    }
+
+    .ingredient li,
+    .buy-list li {
+      color: var(--soft-ink);
+      line-height: 1.35;
+      font-size: 0.9rem;
+    }
+
+    .ingredient li::before,
+    .buy-list li::before {
+      content: "";
+      display: inline-block;
+      width: 0.38rem;
+      height: 0.38rem;
+      margin-right: 0.5rem;
+      border-radius: 50%;
+      background: var(--accent);
+      vertical-align: 0.08rem;
+    }
+
+    .right-tools {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .tool-block {
+      border-top: 1px solid var(--line);
+      padding-top: 1rem;
+    }
+
+    .tool-block:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .tool-block h2 {
+      margin: 0 0 0.55rem;
+      font-size: 1rem;
+      letter-spacing: 0;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.55rem;
+    }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.58rem;
+      background: oklch(97% 0.013 82);
+      color: var(--soft-ink);
+      font-size: 0.86rem;
+    }
+
+    .toggle input {
+      width: auto;
+      accent-color: var(--accent);
+    }
+
+    .shopping-brief {
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .buy-list {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: oklch(98% 0.012 82);
+      padding: 0.78rem;
+    }
+
+    .copy-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.55rem;
+    }
+
+    .quiet {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .empty {
+      min-height: 280px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--soft-ink);
+      padding: 2rem;
+    }
+
+    .empty strong {
+      color: var(--ink);
+      display: block;
+      font-size: 1.25rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .toast {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      background: var(--ink);
+      color: oklch(97% 0.014 82);
+      border-radius: 999px;
+      padding: 0.68rem 0.9rem;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 180ms, transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+      z-index: 10;
+      font-size: 0.88rem;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1040px) {
+      main {
+        grid-template-columns: minmax(230px, 0.76fr) minmax(390px, 1.24fr);
+      }
+
+      .panel:last-child {
+        grid-column: 1 / -1;
+        border-top: 1px solid var(--line);
+        border-right: 0;
+      }
+
+      .right-tools {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: start;
+      }
+
+      .tool-block {
+        border-top: 0;
+        padding-top: 0;
+      }
+    }
+
+    @media (max-width: 760px) {
+      header {
+        align-items: flex-start;
+        position: static;
+      }
+
+      main {
+        display: block;
+      }
+
+      .panel {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .atlas {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .axis-board,
+      .ingredient-grid,
+      .right-tools,
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .copy-row {
+        grid-template-columns: 1fr;
+      }
+
+      .garden-link {
+        padding: 0.45rem 0.62rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>Style Atlas</h1>
+          <div class="subtitle">Turn admired references into taste ingredients and natural-material shopping rules.</div>
+        </div>
+      </div>
+      <a class="garden-link" href="../../../viewer/">Garden</a>
+    </header>
+
+    <main>
+      <section class="panel" aria-label="Style references">
+        <div class="pane-inner">
+          <p class="section-label">Reference Desk</p>
+          <div class="input-row">
+            <textarea id="referenceInput" placeholder="Names, eras, pieces, moods. Try: Carolyn Bessette linen tailoring, Sofia Coppola flats, Tracee Ellis Ross color, Jane Birkin basket ease"></textarea>
+            <button class="primary" id="addReference">Add to atlas</button>
+          </div>
+          <div class="reference-list" id="referenceList"></div>
+        </div>
+      </section>
+
+      <section class="atlas" aria-label="Generated atlas">
+        <div class="atlas-inner" id="atlasOutput"></div>
+      </section>
+
+      <aside class="panel" aria-label="Shopping and material rules">
+        <div class="pane-inner right-tools">
+          <div class="tool-block">
+            <p class="section-label">Guardrails</p>
+            <h2>Material preference</h2>
+            <div class="filters">
+              <label class="toggle"><input type="checkbox" id="linen" checked> linen</label>
+              <label class="toggle"><input type="checkbox" id="cotton" checked> cotton</label>
+              <label class="toggle"><input type="checkbox" id="wool" checked> wool</label>
+              <label class="toggle"><input type="checkbox" id="silk" checked> silk</label>
+              <label class="toggle"><input type="checkbox" id="leather"> leather</label>
+              <label class="toggle"><input type="checkbox" id="viscose"> viscose</label>
+            </div>
+            <p class="quiet">The atlas treats polyester as a stop sign and blends as a question: what percentage, what feel, what purpose?</p>
+          </div>
+
+          <div class="tool-block">
+            <h2>Budget lane</h2>
+            <select id="budget">
+              <option value="secondhand">Secondhand first</option>
+              <option value="highstreet">Accessible stores</option>
+              <option value="investment">Few better pieces</option>
+            </select>
+          </div>
+
+          <div class="tool-block shopping-brief">
+            <h2>Search brief</h2>
+            <ul class="buy-list" id="shoppingBrief"></ul>
+            <div class="copy-row">
+              <input id="copyText" aria-label="Generated search phrase" readonly>
+              <button id="copyBrief">Copy</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Copied</div>
+
+  <script>
+    const storageKey = "style-atlas-v1";
+    const referenceInput = document.getElementById("referenceInput");
+    const referenceList = document.getElementById("referenceList");
+    const atlasOutput = document.getElementById("atlasOutput");
+    const shoppingBrief = document.getElementById("shoppingBrief");
+    const copyText = document.getElementById("copyText");
+    const toast = document.getElementById("toast");
+    const materialIds = ["linen", "cotton", "wool", "silk", "leather", "viscose"];
+
+    const lexicon = [
+      {
+        keys: ["carolyn", "bessette", "minimal", "quiet", "old celine", "phoebe"],
+        title: "quiet column",
+        silhouette: ["long straight coats", "ankle-skimming skirts", "clean necklines"],
+        color: ["bone", "black coffee", "soft grey"],
+        fabric: ["wool gabardine", "crisp cotton", "silk satin"],
+        attitude: ["withheld", "precise", "unbranded"],
+        tricks: ["one severe line with one soft texture", "flat shoes with evening fabrics"],
+        pieces: ["narrow black skirt", "white shirt", "long wool coat"],
+        scores: { restraint: 92, ease: 42, color: 24, polish: 88 }
+      },
+      {
+        keys: ["birkin", "jane", "french", "basket", "bohemian"],
+        title: "undone ease",
+        silhouette: ["straight denim", "tiny knits", "short hems with flats"],
+        color: ["washed blue", "cream", "tobacco"],
+        fabric: ["cotton denim", "linen", "soft suede"],
+        attitude: ["unforced", "sun-worn", "lightly mischievous"],
+        tricks: ["market basket with sharper clothes", "messy hair with a clean shoe"],
+        pieces: ["basket bag", "ribbed tee", "straight jeans"],
+        scores: { restraint: 62, ease: 91, color: 44, polish: 46 }
+      },
+      {
+        keys: ["sofia", "coppola", "ballet", "girl", "simple"],
+        title: "soft discipline",
+        silhouette: ["cropped cardigans", "flat shoes", "plain shift dresses"],
+        color: ["ink", "petal", "pearl"],
+        fabric: ["cotton poplin", "fine wool", "silk crepe"],
+        attitude: ["private", "neat", "low volume"],
+        tricks: ["childlike flat with adult fabric", "one small sentimental detail"],
+        pieces: ["ballet flats", "fine cardigan", "a-line dress"],
+        scores: { restraint: 80, ease: 66, color: 36, polish: 73 }
+      },
+      {
+        keys: ["tracee", "ross", "color", "bold", "print", "volume"],
+        title: "joyful volume",
+        silhouette: ["wide trousers", "strong shoulders", "sculptural sleeves"],
+        color: ["tomato", "cobalt", "marigold"],
+        fabric: ["cotton poplin", "silk twill", "structured wool"],
+        attitude: ["generous", "comic timing", "high presence"],
+        tricks: ["one saturated color repeated twice", "big shape with a calm shoe"],
+        pieces: ["wide-leg trouser", "printed shirt", "oversized coat"],
+        scores: { restraint: 28, ease: 73, color: 96, polish: 69 }
+      },
+      {
+        keys: ["zendaya", "law roach", "red carpet", "sharp", "architectural"],
+        title: "transformer polish",
+        silhouette: ["tailored drama", "long lines", "waist emphasis"],
+        color: ["oxblood", "silver", "ivory"],
+        fabric: ["wool suiting", "silk", "structured cotton"],
+        attitude: ["cinematic", "controlled", "referential"],
+        tricks: ["theme dressing without costume", "one theatrical proportion"],
+        pieces: ["waisted blazer", "floor-length skirt", "pointed shoe"],
+        scores: { restraint: 44, ease: 38, color: 70, polish: 96 }
+      },
+      {
+        keys: ["diane", "keaton", "menswear", "annie hall", "vest", "tie"],
+        title: "borrowed menswear",
+        silhouette: ["roomy trousers", "waistcoats", "layered shirts"],
+        color: ["charcoal", "ivory", "moss"],
+        fabric: ["wool flannel", "cotton oxford", "linen"],
+        attitude: ["wry", "clever", "hands in pockets"],
+        tricks: ["tailored layer over soft shirt", "hat or tie as punctuation"],
+        pieces: ["waistcoat", "pleated trouser", "oxford shirt"],
+        scores: { restraint: 70, ease: 74, color: 31, polish: 78 }
+      }
+    ];
+
+    const generic = {
+      title: "personal through-line",
+      silhouette: ["repeat the shape you reach for", "notice hem length", "choose one proportion to exaggerate"],
+      color: ["one base neutral", "one living color", "one near-white"],
+      fabric: ["linen", "cotton poplin", "fine wool"],
+      attitude: ["intentional", "unforced", "specific"],
+      tricks: ["change one ingredient at a time", "copy the structure, not the outfit"],
+      pieces: ["signature top layer", "best natural-fiber basic", "shoe that sets the mood"],
+      scores: { restraint: 62, ease: 62, color: 50, polish: 62 }
+    };
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey));
+        if (saved && Array.isArray(saved.references)) return saved;
+      } catch (error) {
+        localStorage.removeItem(storageKey);
+      }
+      return {
+        references: ["Carolyn Bessette", "Jane Birkin basket ease", "Diane Keaton menswear"],
+        budget: "secondhand",
+        materials: { linen: true, cotton: true, wool: true, silk: true, leather: false, viscose: false }
+      };
+    }
+
+    function saveState() {
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    }
+
+    function escapeHTML(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function classifyReference(text) {
+      const lower = text.toLowerCase();
+      return lexicon.find(entry => entry.keys.some(key => lower.includes(key))) || {
+        ...generic,
+        title: text.length > 28 ? "specific private reference" : text
+      };
+    }
+
+    function unique(values) {
+      return [...new Set(values.filter(Boolean))];
+    }
+
+    function averageScore(matches, key) {
+      const total = matches.reduce((sum, item) => sum + item.scores[key], 0);
+      return Math.round(total / Math.max(matches.length, 1));
+    }
+
+    function atlas() {
+      const matches = state.references.map(classifyReference);
+      const pull = {
+        silhouette: unique(matches.flatMap(item => item.silhouette)).slice(0, 6),
+        color: unique(matches.flatMap(item => item.color)).slice(0, 5),
+        fabric: unique(matches.flatMap(item => item.fabric)).slice(0, 6),
+        attitude: unique(matches.flatMap(item => item.attitude)).slice(0, 5),
+        tricks: unique(matches.flatMap(item => item.tricks)).slice(0, 5),
+        pieces: unique(matches.flatMap(item => item.pieces)).slice(0, 6),
+        titles: unique(matches.map(item => item.title)).slice(0, 4),
+        scores: {
+          restraint: averageScore(matches, "restraint"),
+          ease: averageScore(matches, "ease"),
+          color: averageScore(matches, "color"),
+          polish: averageScore(matches, "polish")
+        }
+      };
+      return pull;
+    }
+
+    function renderReferences() {
+      referenceList.innerHTML = "";
+      state.references.forEach((ref, index) => {
+        const chip = document.createElement("div");
+        chip.className = "reference-chip";
+        const match = classifyReference(ref);
+        chip.innerHTML = `
+          <div>
+            <strong>${escapeHTML(ref)}</strong>
+            <span>${escapeHTML(match.title)}</span>
+          </div>
+          <button aria-label="Remove ${escapeHTML(ref)}" data-remove="${index}">x</button>
+        `;
+        referenceList.appendChild(chip);
+      });
+    }
+
+    function renderAtlas() {
+      if (!state.references.length) {
+        atlasOutput.innerHTML = `
+          <div class="empty">
+            <div>
+              <strong>Add one style reference.</strong>
+              The atlas will translate it into silhouettes, colors, materials, attitude, and search phrases.
+            </div>
+          </div>
+        `;
+        shoppingBrief.innerHTML = "";
+        copyText.value = "";
+        return;
+      }
+
+      const data = atlas();
+      const swatches = colorSwatches(data.color);
+      atlasOutput.innerHTML = `
+        <section class="verdict">
+          <p class="section-label">Current Reading</p>
+          <h2>${escapeHTML(data.titles.join(" + "))}</h2>
+          <p>Your references are asking for ${escapeHTML(sentenceJoin(data.silhouette.slice(0, 3)))} in ${escapeHTML(sentenceJoin(data.fabric.slice(0, 3)))}. Copy the grammar, not the outfit: let one silhouette, one material, and one attitude survive each purchase.</p>
+        </section>
+
+        <section class="axis-board" aria-label="Style axis scores">
+          ${axis("Restraint", data.scores.restraint, "oklch(47% 0.106 29)")}
+          ${axis("Ease", data.scores.ease, "oklch(55% 0.075 145)")}
+          ${axis("Color", data.scores.color, "oklch(57% 0.102 224)")}
+          ${axis("Polish", data.scores.polish, "oklch(46% 0.067 324)")}
+        </section>
+
+        <section class="verdict">
+          <p class="section-label">Palette Pull</p>
+          <div class="swatches">${swatches}</div>
+        </section>
+
+        <section class="ingredient-grid">
+          ${ingredient("Silhouettes", data.silhouette)}
+          ${ingredient("Materials", data.fabric)}
+          ${ingredient("Attitude", data.attitude)}
+          ${ingredient("Styling tricks", data.tricks)}
+          ${ingredient("Recurring pieces", data.pieces)}
+          ${ingredient("Anti-copy rule", antiCopyRules(data))}
+        </section>
+      `;
+      renderShopping(data);
+    }
+
+    function axis(label, value, tone) {
+      return `
+        <div class="axis">
+          <strong><span>${label}</span><span>${value}</span></strong>
+          <div class="meter" style="--tone: ${tone}; --value: ${value}%"><span></span></div>
+        </div>
+      `;
+    }
+
+    function ingredient(title, items) {
+      return `
+        <div class="ingredient">
+          <h3>${escapeHTML(title)}</h3>
+          <ul>${items.map(item => `<li>${escapeHTML(item)}</li>`).join("")}</ul>
+        </div>
+      `;
+    }
+
+    function antiCopyRules(data) {
+      return [
+        `keep ${data.silhouette[0] || "the proportion"}, change the literal piece`,
+        `buy ${data.fabric[0] || "the fabric"}, not the celebrity costume`,
+        `repeat ${data.attitude[0] || "the attitude"} with clothes you already wear`
+      ];
+    }
+
+    function colorSwatches(names) {
+      const map = {
+        bone: "oklch(91% 0.024 86)",
+        "black coffee": "oklch(24% 0.024 45)",
+        "soft grey": "oklch(73% 0.011 80)",
+        "washed blue": "oklch(68% 0.058 236)",
+        cream: "oklch(92% 0.034 88)",
+        tobacco: "oklch(54% 0.069 55)",
+        ink: "oklch(28% 0.035 259)",
+        petal: "oklch(84% 0.051 14)",
+        pearl: "oklch(88% 0.015 95)",
+        tomato: "oklch(58% 0.15 34)",
+        cobalt: "oklch(49% 0.13 257)",
+        marigold: "oklch(76% 0.131 81)",
+        oxblood: "oklch(36% 0.09 25)",
+        silver: "oklch(78% 0.01 245)",
+        ivory: "oklch(94% 0.026 92)",
+        charcoal: "oklch(31% 0.012 70)",
+        moss: "oklch(48% 0.059 127)"
+      };
+      return names.map(name => `<div class="swatch" style="background:${map[name] || "oklch(78% 0.045 70)"}">${escapeHTML(name)}</div>`).join("");
+    }
+
+    function renderShopping(data) {
+      const materials = materialIds.filter(id => state.materials[id]);
+      const materialText = materials.length ? materials.slice(0, 3).join(" ") : "natural fiber";
+      const lane = {
+        secondhand: ["Vinted and local resale first", "search one size up for tailoring", "skip listings without fabric tags"],
+        highstreet: ["check fabric composition before fit", "start with Uniqlo, COS, Arket, Mango, Muji", "wait for the natural-fiber version"],
+        investment: ["buy the outer layer or shoe first", "cost per wear beats novelty", "alter one excellent base piece"]
+      }[state.budget];
+      const pieces = data.pieces.slice(0, 3);
+      const phrases = pieces.map(piece => `${materialText} ${piece}`);
+      shoppingBrief.innerHTML = [
+        ...lane,
+        `search: ${phrases[0] || `${materialText} signature piece`}`,
+        `avoid: polyester as the main fabric, shiny blends, costume-perfect copies`
+      ].map(item => `<li>${escapeHTML(item)}</li>`).join("");
+      copyText.value = phrases.join(" | ");
+    }
+
+    function sentenceJoin(items) {
+      if (items.length <= 1) return items[0] || "";
+      if (items.length === 2) return `${items[0]} and ${items[1]}`;
+      return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+    }
+
+    function syncControls() {
+      document.getElementById("budget").value = state.budget;
+      materialIds.forEach(id => {
+        document.getElementById(id).checked = Boolean(state.materials[id]);
+      });
+    }
+
+    function render() {
+      syncControls();
+      renderReferences();
+      renderAtlas();
+      saveState();
+    }
+
+    document.getElementById("addReference").addEventListener("click", () => {
+      const values = referenceInput.value
+        .split(/[\n,]+/)
+        .map(item => item.trim())
+        .filter(Boolean);
+      if (!values.length) return;
+      state.references = unique([...state.references, ...values]).slice(0, 10);
+      referenceInput.value = "";
+      render();
+    });
+
+    referenceInput.addEventListener("keydown", event => {
+      if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+        document.getElementById("addReference").click();
+      }
+    });
+
+    referenceList.addEventListener("click", event => {
+      const button = event.target.closest("[data-remove]");
+      if (!button) return;
+      state.references.splice(Number(button.dataset.remove), 1);
+      render();
+    });
+
+    document.getElementById("budget").addEventListener("change", event => {
+      state.budget = event.target.value;
+      render();
+    });
+
+    materialIds.forEach(id => {
+      document.getElementById(id).addEventListener("change", event => {
+        state.materials[id] = event.target.checked;
+        render();
+      });
+    });
+
+    document.getElementById("copyBrief").addEventListener("click", async () => {
+      if (!copyText.value) return;
+      try {
+        await navigator.clipboard.writeText(copyText.value);
+      } catch (error) {
+        copyText.select();
+        document.execCommand("copy");
+      }
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 1200);
+    });
+
+    render();
+  </script>
+</body>
+</html>
