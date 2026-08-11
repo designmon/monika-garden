@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orca Intelligence Observatory</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --abyss: oklch(16% 0.055 242);
+      --water: oklch(24% 0.082 225);
+      --water-2: oklch(33% 0.086 207);
+      --foam: oklch(91% 0.021 205);
+      --soft: oklch(73% 0.052 202);
+      --kelp: oklch(67% 0.13 151);
+      --amber: oklch(76% 0.15 78);
+      --coral: oklch(68% 0.16 21);
+      --violet: oklch(67% 0.13 304);
+      --line: oklch(69% 0.045 206 / 0.28);
+      --shadow: oklch(8% 0.05 240 / 0.45);
+      font-family: Avenir Next, Trebuchet MS, Segoe UI, system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--abyss);
+      color: var(--foam);
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 14% 12%, oklch(57% 0.13 190 / 0.32), transparent 28rem),
+        radial-gradient(circle at 84% 18%, oklch(68% 0.13 304 / 0.18), transparent 22rem),
+        linear-gradient(180deg, oklch(32% 0.09 213), oklch(17% 0.059 240) 48%, oklch(12% 0.052 249));
+    }
+
+    button,
+    a {
+      font: inherit;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 2px solid var(--amber);
+      outline-offset: 4px;
+    }
+
+    .observatory {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: clamp(16px, 3vw, 30px);
+      pointer-events: none;
+    }
+
+    .garden-link,
+    .tempo-button {
+      pointer-events: auto;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: oklch(18% 0.061 236 / 0.72);
+      color: var(--foam);
+      text-decoration: none;
+      box-shadow: 0 12px 34px var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .garden-link {
+      padding: 0 13px;
+      font-size: 0.92rem;
+      font-weight: 750;
+    }
+
+    .tempo-button {
+      width: 42px;
+      cursor: pointer;
+    }
+
+    .tempo-button svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.2;
+    }
+
+    .world {
+      position: relative;
+      min-height: calc(100vh - 126px);
+      isolation: isolate;
+    }
+
+    canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+    }
+
+    .title {
+      position: absolute;
+      z-index: 2;
+      left: clamp(18px, 5vw, 72px);
+      top: clamp(16px, 7vh, 74px);
+      max-width: min(620px, calc(100vw - 36px));
+      pointer-events: none;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 10ch;
+      color: oklch(95% 0.026 198);
+      font-size: clamp(2.5rem, 8vw, 6.9rem);
+      line-height: 0.9;
+      letter-spacing: 0;
+      text-shadow: 0 6px 38px oklch(9% 0.05 240 / 0.5);
+    }
+
+    .subtitle {
+      max-width: 34rem;
+      margin: 18px 0 0;
+      color: oklch(83% 0.044 202);
+      font-size: clamp(1rem, 1.8vw, 1.22rem);
+      line-height: 1.62;
+      text-shadow: 0 4px 24px oklch(8% 0.045 240 / 0.55);
+    }
+
+    .ledger {
+      position: absolute;
+      z-index: 2;
+      right: clamp(14px, 3vw, 40px);
+      bottom: clamp(16px, 4vh, 38px);
+      width: min(390px, calc(100vw - 28px));
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: oklch(14% 0.053 244 / 0.72);
+      box-shadow: 0 24px 70px var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .ledger-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .ledger h2 {
+      margin: 0;
+      color: oklch(93% 0.025 195);
+      font-size: 1rem;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .cycle {
+      flex: 0 0 auto;
+      color: var(--amber);
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+
+    .event-list {
+      display: grid;
+      gap: 9px;
+      min-height: 7.6rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .event {
+      display: grid;
+      grid-template-columns: 10px 1fr;
+      gap: 9px;
+      align-items: start;
+      color: oklch(85% 0.037 204);
+      font-size: 0.88rem;
+      line-height: 1.38;
+    }
+
+    .event::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      margin-top: 5px;
+      border: 1px solid currentColor;
+      background: var(--event-color, var(--kelp));
+      box-shadow: 0 0 18px var(--event-color, var(--kelp));
+    }
+
+    .pod-strip {
+      position: absolute;
+      z-index: 2;
+      left: clamp(14px, 3vw, 34px);
+      right: clamp(14px, 3vw, 34px);
+      bottom: clamp(14px, 3vh, 32px);
+      display: grid;
+      grid-template-columns: repeat(6, minmax(76px, 1fr));
+      gap: 8px;
+      max-width: 710px;
+      pointer-events: none;
+    }
+
+    .whale-card {
+      min-height: 68px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 10px;
+      background: oklch(15% 0.052 244 / 0.58);
+      box-shadow: 0 18px 48px oklch(8% 0.05 240 / 0.32);
+      backdrop-filter: blur(8px);
+    }
+
+    .whale-name {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--foam);
+      font-size: 0.78rem;
+      font-weight: 850;
+    }
+
+    .whale-name::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: var(--mark);
+      box-shadow: 0 0 13px var(--mark);
+    }
+
+    .whale-role {
+      margin-top: 5px;
+      color: oklch(72% 0.043 203);
+      font-size: 0.72rem;
+      line-height: 1.25;
+    }
+
+    .footer-note {
+      position: relative;
+      z-index: 3;
+      padding: 0 clamp(16px, 3vw, 30px) clamp(18px, 3vw, 26px);
+      color: oklch(70% 0.04 205);
+      font-size: 0.82rem;
+    }
+
+    @media (max-width: 880px) {
+      .world {
+        min-height: 820px;
+      }
+
+      .title {
+        top: 26px;
+      }
+
+      .ledger {
+        right: 14px;
+        left: 14px;
+        bottom: 152px;
+        width: auto;
+      }
+
+      .pod-strip {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 560px) {
+      .topbar {
+        padding: 14px;
+      }
+
+      .world {
+        min-height: 780px;
+      }
+
+      h1 {
+        max-width: 9ch;
+      }
+
+      .subtitle {
+        max-width: 21rem;
+      }
+
+      .ledger {
+        bottom: 212px;
+      }
+
+      .pod-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .whale-card {
+        min-height: 60px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tempo-button {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="observatory">
+    <nav class="topbar" aria-label="Garden navigation">
+      <a class="garden-link" href="../../../viewer/">Back to garden</a>
+      <button class="tempo-button" id="tempoButton" type="button" aria-label="Pause observatory">
+        <svg id="tempoIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path d="M8 5v14"></path>
+          <path d="M16 5v14"></path>
+        </svg>
+      </button>
+    </nav>
+
+    <section class="world" aria-label="Pixel-art orca social simulation">
+      <canvas id="reef" aria-hidden="true"></canvas>
+      <div class="title">
+        <h1>Orca Intelligence Observatory</h1>
+        <p class="subtitle">A small pod remembers routes, teaches calves, gathers around elders, and carries a shared dialect through cold pixel water.</p>
+      </div>
+      <aside class="ledger" aria-live="polite">
+        <div class="ledger-title">
+          <h2>What the pod is doing</h2>
+          <div class="cycle" id="cycleLabel">cycle 001</div>
+        </div>
+        <ol class="event-list" id="eventList"></ol>
+      </aside>
+      <div class="pod-strip" id="podStrip" aria-label="Pod members"></div>
+    </section>
+
+    <div class="footer-note">No feed, no scoring, no commands. The observatory is meant to be watched.</div>
+  </main>
+
+  <script>
+    (() => {
+      const canvas = document.getElementById("reef");
+      const ctx = canvas.getContext("2d");
+      const eventList = document.getElementById("eventList");
+      const cycleLabel = document.getElementById("cycleLabel");
+      const podStrip = document.getElementById("podStrip");
+      const tempoButton = document.getElementById("tempoButton");
+      const tempoIcon = document.getElementById("tempoIcon");
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const palette = {
+        foam: "oklch(93% 0.02 205)",
+        ink: "oklch(9% 0.03 245)",
+        elder: "oklch(76% 0.15 78)",
+        scout: "oklch(68% 0.16 21)",
+        calf: "oklch(67% 0.13 304)",
+        teacher: "oklch(67% 0.13 151)",
+        route: "oklch(83% 0.08 192 / 0.42)",
+        memory: "oklch(76% 0.14 78 / 0.5)",
+        waterLine: "oklch(66% 0.07 200 / 0.13)"
+      };
+
+      const pod = [
+        {
+          name: "Sava",
+          role: "matriarch, keeps routes",
+          mark: palette.elder,
+          age: 71,
+          x: 0.42,
+          y: 0.52,
+          speed: 0.00034,
+          size: 1.22,
+          phase: 0,
+          target: 2,
+          memory: [0, 1, 2, 3],
+          kin: ["Nori", "Lio", "Mika"],
+          dialect: [1, 0, 1, 1, 0]
+        },
+        {
+          name: "Nori",
+          role: "teacher, repeats lessons",
+          mark: palette.teacher,
+          age: 38,
+          x: 0.33,
+          y: 0.58,
+          speed: 0.00043,
+          size: 1.08,
+          phase: 1.9,
+          target: 2,
+          memory: [0, 2],
+          kin: ["Sava", "Mika"],
+          dialect: [1, 0, 1, 1, 0]
+        },
+        {
+          name: "Lio",
+          role: "scout, tests edges",
+          mark: palette.scout,
+          age: 24,
+          x: 0.52,
+          y: 0.44,
+          speed: 0.00055,
+          size: 1,
+          phase: 3.4,
+          target: 1,
+          memory: [1, 3],
+          kin: ["Sava"],
+          dialect: [1, 1, 0, 1, 0]
+        },
+        {
+          name: "Mika",
+          role: "calf, learns by orbit",
+          mark: palette.calf,
+          age: 5,
+          x: 0.27,
+          y: 0.63,
+          speed: 0.00049,
+          size: 0.72,
+          phase: 2.8,
+          target: 0,
+          memory: [],
+          kin: ["Sava", "Nori"],
+          dialect: [1, 0, 1, 1, 0]
+        },
+        {
+          name: "Venn",
+          role: "auntie, guards calves",
+          mark: "oklch(72% 0.09 187)",
+          age: 42,
+          x: 0.49,
+          y: 0.66,
+          speed: 0.00041,
+          size: 1.03,
+          phase: 4.4,
+          target: 2,
+          memory: [2, 3],
+          kin: ["Mika", "Nori"],
+          dialect: [1, 0, 1, 1, 0]
+        },
+        {
+          name: "Tala",
+          role: "visitor, brings a variant call",
+          mark: "oklch(78% 0.11 319)",
+          age: 31,
+          x: 0.7,
+          y: 0.4,
+          speed: 0.00038,
+          size: 0.98,
+          phase: 5.2,
+          target: 1,
+          memory: [1],
+          kin: [],
+          dialect: [0, 1, 0, 1, 1]
+        }
+      ];
+
+      const places = [
+        { name: "shelf", x: 0.2, y: 0.65, pull: 0.95, color: "oklch(65% 0.12 151 / 0.8)" },
+        { name: "breach", x: 0.78, y: 0.32, pull: 0.72, color: "oklch(76% 0.15 78 / 0.75)" },
+        { name: "school", x: 0.52, y: 0.55, pull: 0.86, color: "oklch(68% 0.16 21 / 0.75)" },
+        { name: "old route", x: 0.65, y: 0.76, pull: 0.8, color: "oklch(67% 0.13 304 / 0.7)" }
+      ];
+
+      const eventTemplates = [
+        { color: palette.elder, text: "Sava turns first. The others bend into her remembered shelf route." },
+        { color: palette.teacher, text: "Nori slows beside Mika and repeats the hunting arc until the calf copies it." },
+        { color: palette.scout, text: "Lio leaves the pod, samples the open edge, then returns with a sharper path." },
+        { color: palette.calf, text: "Mika echoes the family dialect out of order. Sava answers with the full phrase." },
+        { color: "oklch(72% 0.09 187)", text: "Venn crosses between Mika and deep water, holding the calf inside the pod." },
+        { color: "oklch(78% 0.11 319)", text: "Tala calls differently. The pod keeps its rhythm, then borrows one bright note." },
+        { color: palette.memory, text: "The group revisits a place that is not visible until their paths redraw it." }
+      ];
+
+      let width = 0;
+      let height = 0;
+      let dpr = 1;
+      let t = 0;
+      let cycle = 1;
+      let paused = reducedMotion;
+      let lastFrame = performance.now();
+      let lastEventAt = 0;
+      let routePulse = 0;
+      const wakes = [];
+      const songRings = [];
+      const events = [];
+
+      function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const rect = canvas.getBoundingClientRect();
+        width = Math.max(320, Math.floor(rect.width));
+        height = Math.max(520, Math.floor(rect.height));
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function seedInterface() {
+        podStrip.innerHTML = pod.map((orca) => `
+          <div class="whale-card" style="--mark: ${orca.mark}">
+            <div class="whale-name">${orca.name}</div>
+            <div class="whale-role">${orca.role}</div>
+          </div>
+        `).join("");
+        pushEvent(eventTemplates[0]);
+        pushEvent(eventTemplates[1]);
+        pushEvent(eventTemplates[4]);
+        setTempoIcon();
+      }
+
+      function pushEvent(event) {
+        events.unshift(event);
+        while (events.length > 4) events.pop();
+        eventList.innerHTML = events.map((item) => `
+          <li class="event" style="--event-color: ${item.color}">${item.text}</li>
+        `).join("");
+      }
+
+      function setTempoIcon() {
+        tempoButton.setAttribute("aria-label", paused ? "Resume observatory" : "Pause observatory");
+        tempoIcon.innerHTML = paused
+          ? '<path d="M8 5v14l11-7z"></path>'
+          : '<path d="M8 5v14"></path><path d="M16 5v14"></path>';
+      }
+
+      function placeToPixel(place) {
+        return {
+          x: place.x * width,
+          y: place.y * height
+        };
+      }
+
+      function drawBackground() {
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(0, "oklch(34% 0.09 211)");
+        gradient.addColorStop(0.46, "oklch(22% 0.072 229)");
+        gradient.addColorStop(1, "oklch(12% 0.054 247)");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.save();
+        ctx.globalAlpha = 0.45;
+        for (let y = -20; y < height + 40; y += 34) {
+          ctx.strokeStyle = palette.waterLine;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          for (let x = -10; x <= width + 10; x += 14) {
+            const wave = Math.sin(x * 0.012 + y * 0.04 + t * 0.0017) * 8;
+            if (x === -10) ctx.moveTo(x, y + wave);
+            else ctx.lineTo(x, y + wave);
+          }
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        drawKelp();
+        drawPlaces();
+      }
+
+      function drawKelp() {
+        ctx.save();
+        for (let i = 0; i < 24; i += 1) {
+          const baseX = (i / 23) * width;
+          const baseY = height + 8;
+          const kelpHeight = 80 + ((i * 47) % 120);
+          const sway = Math.sin(t * 0.001 + i) * 12;
+          ctx.strokeStyle = i % 4 === 0 ? "oklch(62% 0.13 151 / 0.42)" : "oklch(50% 0.1 164 / 0.32)";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(baseX, baseY);
+          ctx.bezierCurveTo(baseX + sway, baseY - kelpHeight * 0.35, baseX - sway, baseY - kelpHeight * 0.7, baseX + sway * 0.4, baseY - kelpHeight);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      function drawPlaces() {
+        places.forEach((place, index) => {
+          const p = placeToPixel(place);
+          const pulse = 0.5 + Math.sin(t * 0.0014 + index) * 0.5;
+          ctx.save();
+          ctx.globalAlpha = 0.55 + pulse * 0.18;
+          ctx.fillStyle = place.color;
+          pixelDiamond(p.x, p.y, 5 + pulse * 5);
+          ctx.globalAlpha = 0.22;
+          ctx.strokeStyle = place.color;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 28 + pulse * 18, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        });
+      }
+
+      function pixelDiamond(x, y, r) {
+        const size = Math.round(r);
+        ctx.beginPath();
+        ctx.moveTo(Math.round(x), Math.round(y - size));
+        ctx.lineTo(Math.round(x + size), Math.round(y));
+        ctx.lineTo(Math.round(x), Math.round(y + size));
+        ctx.lineTo(Math.round(x - size), Math.round(y));
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      function updatePod(delta) {
+        routePulse += delta * 0.0006;
+        pod.forEach((orca, index) => {
+          const targetPlace = places[orca.target];
+          const target = placeToPixel(targetPlace);
+          const elderBias = index === 0 ? 0 : 0.18;
+          const elder = pod[0];
+          const elderPoint = { x: elder.x * width, y: elder.y * height };
+          const own = { x: orca.x * width, y: orca.y * height };
+          const orbit = Math.sin(t * orca.speed + orca.phase) * 70;
+          const desiredX = target.x + Math.cos(t * orca.speed * 1.8 + orca.phase) * (80 + orbit * 0.3);
+          const desiredY = target.y + Math.sin(t * orca.speed * 1.4 + orca.phase) * (48 + orbit * 0.16);
+          const socialX = desiredX * (1 - elderBias) + elderPoint.x * elderBias;
+          const socialY = desiredY * (1 - elderBias) + elderPoint.y * elderBias;
+          const approach = orca.age < 8 ? 0.014 : 0.008 + targetPlace.pull * 0.003;
+          orca.x = (own.x + (socialX - own.x) * approach) / width;
+          orca.y = (own.y + (socialY - own.y) * approach) / height;
+          orca.heading = Math.atan2(socialY - own.y, socialX - own.x);
+
+          if (index === 3) {
+            const teacher = pod[1];
+            orca.x = orca.x * 0.965 + (teacher.x + Math.sin(t * 0.003) * 0.035) * 0.035;
+            orca.y = orca.y * 0.965 + (teacher.y + Math.cos(t * 0.002) * 0.026) * 0.035;
+          }
+
+          wakes.push({
+            x: orca.x * width,
+            y: orca.y * height,
+            mark: orca.mark,
+            life: 1,
+            size: 6 * orca.size
+          });
+        });
+
+        if (t - lastEventAt > 5200) {
+          const event = eventTemplates[(cycle + Math.floor(t / 1800)) % eventTemplates.length];
+          pushEvent(event);
+          lastEventAt = t;
+          cycle += 1;
+          cycleLabel.textContent = `cycle ${String(cycle).padStart(3, "0")}`;
+          const teacher = pod[(cycle + 1) % pod.length];
+          songRings.push({
+            x: teacher.x * width,
+            y: teacher.y * height,
+            mark: teacher.mark,
+            life: 1
+          });
+
+          if (cycle % 3 === 0) {
+            pod[2].target = (pod[2].target + 1) % places.length;
+          }
+          if (cycle % 4 === 0) {
+            pod[3].memory.push(pod[1].target);
+            pod[3].memory = [...new Set(pod[3].memory)].slice(-4);
+          }
+          if (cycle % 5 === 0) {
+            pod[5].target = (pod[5].target + 2) % places.length;
+          }
+        }
+      }
+
+      function drawRoutes() {
+        ctx.save();
+        ctx.lineWidth = 2;
+        pod.forEach((orca) => {
+          if (!orca.memory.length) return;
+          ctx.strokeStyle = orca.mark;
+          ctx.globalAlpha = 0.16;
+          ctx.beginPath();
+          orca.memory.forEach((placeIndex, index) => {
+            const p = placeToPixel(places[placeIndex]);
+            const ox = Math.sin(routePulse + index + orca.phase) * 14;
+            const oy = Math.cos(routePulse * 0.8 + index) * 10;
+            if (index === 0) ctx.moveTo(p.x + ox, p.y + oy);
+            else ctx.lineTo(p.x + ox, p.y + oy);
+          });
+          ctx.stroke();
+        });
+        ctx.restore();
+      }
+
+      function drawWakes(delta) {
+        ctx.save();
+        for (let i = wakes.length - 1; i >= 0; i -= 1) {
+          const wake = wakes[i];
+          wake.life -= delta * 0.00048;
+          if (wake.life <= 0) {
+            wakes.splice(i, 1);
+            continue;
+          }
+          ctx.globalAlpha = wake.life * 0.23;
+          ctx.fillStyle = wake.mark;
+          pixelDiamond(wake.x, wake.y, wake.size * (1.15 - wake.life));
+        }
+        ctx.restore();
+      }
+
+      function drawSongRings(delta) {
+        ctx.save();
+        for (let i = songRings.length - 1; i >= 0; i -= 1) {
+          const ring = songRings[i];
+          ring.life -= delta * 0.00032;
+          if (ring.life <= 0) {
+            songRings.splice(i, 1);
+            continue;
+          }
+          const radius = (1 - ring.life) * 120;
+          ctx.globalAlpha = ring.life * 0.52;
+          ctx.strokeStyle = ring.mark;
+          ctx.lineWidth = 2;
+          ctx.setLineDash([6, 9]);
+          ctx.beginPath();
+          ctx.arc(ring.x, ring.y, radius, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+        ctx.restore();
+      }
+
+      function drawKinLines() {
+        ctx.save();
+        pod.forEach((orca) => {
+          orca.kin.forEach((kinName) => {
+            const other = pod.find((candidate) => candidate.name === kinName);
+            if (!other) return;
+            ctx.strokeStyle = orca.mark;
+            ctx.globalAlpha = 0.12;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(orca.x * width, orca.y * height);
+            ctx.lineTo(other.x * width, other.y * height);
+            ctx.stroke();
+          });
+        });
+        ctx.restore();
+      }
+
+      function drawOrca(orca, index) {
+        const x = Math.round(orca.x * width);
+        const y = Math.round(orca.y * height);
+        const scale = Math.max(0.82, Math.min(1.4, orca.size * (width < 600 ? 0.82 : 1)));
+        const flip = Math.cos(orca.heading || 0) < 0 ? -1 : 1;
+        const breath = Math.sin(t * 0.004 + index) * 2;
+
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(flip * scale, scale);
+        ctx.rotate(Math.sin(orca.heading || 0) * 0.08);
+
+        ctx.fillStyle = "oklch(7% 0.022 246)";
+        ctx.fillRect(-25, -8, 44, 16);
+        ctx.fillRect(-16, -14, 22, 6);
+        ctx.fillRect(4, -17, 7, 10);
+        ctx.fillRect(16, -5, 13, 10);
+        ctx.fillRect(-32, -3, 10, 6);
+        ctx.fillRect(-39, -8, 8, 4);
+        ctx.fillRect(-39, 4, 8, 4);
+
+        ctx.fillStyle = palette.foam;
+        ctx.fillRect(-8, -3, 20, 7);
+        ctx.fillRect(14, -2, 7, 4);
+        ctx.fillRect(-19, -6, 7, 4);
+
+        ctx.fillStyle = orca.mark;
+        ctx.fillRect(-3, -20 - breath * 0.2, 5, 4);
+        ctx.fillRect(22, -10, 4, 3);
+
+        ctx.restore();
+
+        drawDialect(x, y, orca, index);
+      }
+
+      function drawDialect(x, y, orca, index) {
+        const beat = Math.floor((t * 0.006 + index * 2) % 18);
+        ctx.save();
+        orca.dialect.forEach((note, noteIndex) => {
+          if (!note) return;
+          const lit = beat === noteIndex * 3 || beat === noteIndex * 3 + 1;
+          ctx.fillStyle = lit ? orca.mark : "oklch(86% 0.025 205 / 0.4)";
+          ctx.globalAlpha = lit ? 0.92 : 0.32;
+          ctx.fillRect(Math.round(x - 18 + noteIndex * 8), Math.round(y + 17), 4, 4);
+        });
+        ctx.restore();
+      }
+
+      function frame(now) {
+        const rawDelta = Math.min(40, now - lastFrame);
+        const delta = paused ? 0 : rawDelta;
+        lastFrame = now;
+        t += delta;
+
+        drawBackground();
+        if (!paused) updatePod(delta);
+        drawWakes(rawDelta);
+        drawRoutes();
+        drawKinLines();
+        drawSongRings(rawDelta);
+        pod.forEach(drawOrca);
+
+        requestAnimationFrame(frame);
+      }
+
+      tempoButton.addEventListener("click", () => {
+        paused = !paused;
+        setTempoIcon();
+      });
+
+      window.addEventListener("resize", resize);
+      resize();
+      seedInterface();
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>
