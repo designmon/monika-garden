@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wild Spark Cabinet</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: oklch(96% 0.013 83);
+      --paper-deep: oklch(91% 0.026 72);
+      --ink: oklch(22% 0.035 246);
+      --muted: oklch(45% 0.034 251);
+      --line: oklch(74% 0.041 77);
+      --blue: oklch(55% 0.145 230);
+      --moss: oklch(49% 0.119 143);
+      --rose: oklch(58% 0.151 17);
+      --amber: oklch(72% 0.161 78);
+      --violet: oklch(49% 0.118 304);
+      --shadow: 0 18px 44px oklch(30% 0.042 70 / 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      color: var(--ink);
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      background:
+        radial-gradient(circle at 17% 16%, oklch(84% 0.104 79 / 0.42), transparent 28rem),
+        linear-gradient(135deg, var(--paper), oklch(89% 0.035 211));
+      overflow-x: hidden;
+    }
+
+    button,
+    textarea {
+      font: inherit;
+    }
+
+    .back {
+      position: fixed;
+      z-index: 10;
+      top: 1rem;
+      left: 1rem;
+      color: var(--ink);
+      background: oklch(98% 0.012 84 / 0.88);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.55rem 0.8rem;
+      text-decoration: none;
+      box-shadow: 0 10px 28px oklch(35% 0.04 70 / 0.16);
+    }
+
+    .wrap {
+      width: min(1180px, calc(100vw - 28px));
+      margin: 0 auto;
+      padding: 5rem 0 2rem;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 0.72fr 1.25fr 0.76fr;
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .cabinet,
+    .spark,
+    .shelf {
+      min-width: 0;
+    }
+
+    .cabinet {
+      border: 1px solid oklch(60% 0.057 68);
+      background: oklch(42% 0.074 63);
+      color: oklch(96% 0.012 83);
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 42rem;
+    }
+
+    .cabinet header,
+    .shelf header {
+      padding: 1rem;
+      border-bottom: 1px solid oklch(100% 0 0 / 0.18);
+    }
+
+    .cabinet h1 {
+      margin: 0;
+      font-size: 1.45rem;
+      line-height: 1.08;
+      letter-spacing: 0;
+      max-width: 12ch;
+    }
+
+    .cabinet p {
+      margin: 0.8rem 0 0;
+      color: oklch(91% 0.024 83);
+      line-height: 1.5;
+      max-width: 28ch;
+    }
+
+    .drawer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: minmax(5.4rem, 1fr);
+      gap: 0.55rem;
+      padding: 0.8rem;
+    }
+
+    .drawer {
+      position: relative;
+      border: 1px solid oklch(77% 0.065 75 / 0.72);
+      background:
+        linear-gradient(180deg, oklch(55% 0.098 70), oklch(37% 0.074 59));
+      cursor: pointer;
+      transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), filter 180ms ease;
+      min-height: 5.4rem;
+    }
+
+    .drawer:hover,
+    .drawer:focus-visible {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      outline: none;
+    }
+
+    .drawer[aria-pressed="true"] {
+      background:
+        linear-gradient(180deg, oklch(73% 0.14 var(--drawer-hue)), oklch(45% 0.11 var(--drawer-hue)));
+    }
+
+    .drawer::before {
+      content: "";
+      position: absolute;
+      top: 0.62rem;
+      left: 50%;
+      width: 0.78rem;
+      height: 0.78rem;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      background: oklch(88% 0.114 87);
+      box-shadow: inset 0 -2px 0 oklch(41% 0.067 68 / 0.5);
+    }
+
+    .drawer span {
+      position: absolute;
+      inset: auto 0.35rem 0.42rem;
+      color: oklch(97% 0.011 83);
+      font-size: 0.62rem;
+      line-height: 1.15;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .cabinet footer {
+      padding: 0.9rem 1rem 1rem;
+      color: oklch(91% 0.029 82);
+      border-top: 1px solid oklch(100% 0 0 / 0.16);
+      line-height: 1.45;
+      font-size: 0.78rem;
+    }
+
+    .spark {
+      position: relative;
+      border: 1px solid var(--line);
+      background: oklch(97% 0.014 88 / 0.9);
+      box-shadow: var(--shadow);
+      min-height: 42rem;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: 13rem 1fr auto;
+    }
+
+    #sky {
+      width: 100%;
+      height: 13rem;
+      display: block;
+      background: oklch(27% 0.056 244);
+    }
+
+    .spark-body {
+      padding: 1rem clamp(1rem, 4vw, 2.2rem) 1.2rem;
+      display: grid;
+      gap: 1rem;
+      align-content: start;
+    }
+
+    .label {
+      margin: 0;
+      color: var(--rose);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .spark h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.35rem;
+      line-height: 0.98;
+      letter-spacing: 0;
+      max-width: 13ch;
+    }
+
+    .spark-text {
+      margin: 0;
+      color: oklch(31% 0.035 246);
+      font-size: 1.02rem;
+      line-height: 1.6;
+      max-width: 62ch;
+    }
+
+    .specimen {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .slip {
+      border: 1px dashed oklch(64% 0.056 73);
+      background: oklch(94% 0.026 86);
+      padding: 0.85rem;
+      min-height: 7rem;
+    }
+
+    .slip b {
+      display: block;
+      margin-bottom: 0.45rem;
+      color: oklch(34% 0.062 252);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+    }
+
+    .slip p {
+      margin: 0;
+      line-height: 1.48;
+      color: oklch(31% 0.033 246);
+    }
+
+    .spark-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.7rem;
+      padding: 1rem clamp(1rem, 4vw, 2.2rem) 1.25rem;
+      border-top: 1px solid var(--line);
+      background: oklch(94% 0.02 83 / 0.82);
+    }
+
+    .action {
+      min-height: 2.9rem;
+      border: 1px solid oklch(52% 0.049 245);
+      border-radius: 0.45rem;
+      background: oklch(27% 0.056 244);
+      color: oklch(96% 0.012 84);
+      cursor: pointer;
+      transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), background 180ms ease;
+    }
+
+    .action:hover,
+    .action:focus-visible {
+      transform: translateY(-1px);
+      background: oklch(34% 0.075 244);
+      outline: 2px solid oklch(72% 0.15 78);
+      outline-offset: 2px;
+    }
+
+    .action.secondary {
+      background: oklch(94% 0.015 84);
+      color: var(--ink);
+    }
+
+    .action.secondary:hover,
+    .action.secondary:focus-visible {
+      background: oklch(89% 0.026 80);
+    }
+
+    .shelf {
+      border: 1px solid var(--line);
+      background: oklch(95% 0.019 126);
+      min-height: 42rem;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+    }
+
+    .shelf header {
+      border-bottom-color: oklch(72% 0.049 143);
+    }
+
+    .shelf h3 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .shelf p {
+      margin: 0.55rem 0 0;
+      color: oklch(40% 0.043 143);
+      line-height: 1.45;
+      font-size: 0.82rem;
+    }
+
+    .nudge {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid oklch(72% 0.049 143);
+    }
+
+    .nudge label {
+      display: block;
+      color: oklch(34% 0.052 143);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 0.45rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 6.4rem;
+      resize: vertical;
+      border: 1px solid oklch(67% 0.057 143);
+      border-radius: 0.45rem;
+      background: oklch(98% 0.013 111);
+      color: var(--ink);
+      padding: 0.75rem;
+      line-height: 1.45;
+    }
+
+    textarea:focus {
+      outline: 2px solid var(--moss);
+      outline-offset: 2px;
+    }
+
+    .pinned {
+      padding: 0.8rem;
+      overflow: auto;
+      display: grid;
+      gap: 0.65rem;
+      align-content: start;
+    }
+
+    .pin {
+      border: 1px solid oklch(70% 0.049 143);
+      background: oklch(98% 0.011 109);
+      padding: 0.8rem;
+    }
+
+    .pin strong {
+      display: block;
+      font-size: 0.86rem;
+      line-height: 1.25;
+      color: oklch(29% 0.049 143);
+    }
+
+    .pin span {
+      display: block;
+      margin-top: 0.45rem;
+      color: oklch(42% 0.04 143);
+      font-size: 0.73rem;
+      line-height: 1.4;
+    }
+
+    .empty {
+      color: oklch(40% 0.039 143);
+      font-size: 0.82rem;
+      line-height: 1.45;
+      padding: 0.2rem;
+    }
+
+    .toast {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 20;
+      max-width: min(22rem, calc(100vw - 2rem));
+      background: oklch(27% 0.056 244);
+      color: oklch(96% 0.012 84);
+      border: 1px solid oklch(66% 0.11 78);
+      border-radius: 0.55rem;
+      padding: 0.75rem 0.9rem;
+      box-shadow: var(--shadow);
+      transform: translateY(1.25rem);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 980px) {
+      .wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .cabinet,
+      .spark,
+      .shelf {
+        min-height: auto;
+      }
+
+      .cabinet {
+        grid-template-rows: auto auto auto;
+      }
+
+      .drawer-grid {
+        grid-template-columns: repeat(6, 1fr);
+        grid-auto-rows: 4.6rem;
+      }
+
+      .spark {
+        grid-template-rows: 11rem 1fr auto;
+      }
+
+      #sky {
+        height: 11rem;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .wrap {
+        width: min(100vw - 20px, 38rem);
+        padding-top: 4.5rem;
+      }
+
+      .drawer-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .spark h2 {
+        font-size: 1.85rem;
+      }
+
+      .specimen,
+      .spark-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .back {
+        top: 0.65rem;
+        left: 0.65rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="back" href="../../../viewer/">Back to garden</a>
+
+  <main class="wrap" aria-live="polite">
+    <section class="cabinet" aria-labelledby="cabinet-title">
+      <header>
+        <p class="label">plot c3</p>
+        <h1 id="cabinet-title">Wild Spark Cabinet</h1>
+        <p>Open a drawer. The cabinet proposes first; you only decide whether the spark is worth keeping warm.</p>
+      </header>
+      <div class="drawer-grid" id="drawers" aria-label="Spark drawers"></div>
+      <footer>
+        Each drawer mixes a mood, a shape, and a field note into a small impossible thing.
+      </footer>
+    </section>
+
+    <section class="spark" aria-labelledby="spark-title">
+      <canvas id="sky" width="900" height="300" aria-label="A procedural field of sparks"></canvas>
+      <div class="spark-body">
+        <p class="label" id="spark-code">spark</p>
+        <h2 id="spark-title"></h2>
+        <p class="spark-text" id="spark-text"></p>
+        <div class="specimen" aria-label="Spark details">
+          <article class="slip">
+            <b>First move</b>
+            <p id="first-move"></p>
+          </article>
+          <article class="slip">
+            <b>Possible graft</b>
+            <p id="graft"></p>
+          </article>
+        </div>
+      </div>
+      <div class="spark-actions">
+        <button class="action" id="another" type="button">Strike another</button>
+        <button class="action secondary" id="mutate" type="button">Mutate this</button>
+        <button class="action secondary" id="pin" type="button">Pin spark</button>
+      </div>
+    </section>
+
+    <aside class="shelf" aria-labelledby="shelf-title">
+      <header>
+        <h3 id="shelf-title">Pinned Sparks</h3>
+        <p>Kept here in this browser, ready for a flat day or a future garden visit.</p>
+      </header>
+      <div class="nudge">
+        <label for="nudge">Tiny nudge</label>
+        <textarea id="nudge" maxlength="180" placeholder="Optional: one word, a mood, a problem, a color, a joke."></textarea>
+      </div>
+      <div class="pinned" id="pinned"></div>
+    </aside>
+  </main>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    const drawers = [
+      "misfit ritual", "soft machine", "tiny world", "future folklore",
+      "odd interface", "visual spell", "kind prank", "project seed",
+      "strange prompt", "mood weather", "dinner myth", "style oracle",
+      "browser charm", "anti-planner", "toy prophecy", "quiet dare",
+      "pocket museum", "wild graft"
+    ];
+
+    const subjects = [
+      "a browser extension that gently replaces corporate filler with weather reports",
+      "a dinner party where every seat has a secret weather system",
+      "a wardrobe oracle that assigns clothes to fictional errands",
+      "a calendar that grows tiny landscapes from unused words",
+      "a Cruella episode generator that keeps mistaking appliances for vaults",
+      "a values compass that refuses certainty and offers dares instead",
+      "a reframe machine that speaks only in stage directions",
+      "a notebook page that turns one complaint into a theatrical prop",
+      "a miniature museum for ideas that almost became useful",
+      "a web greeting layer that gives each site a personal knock"
+    ];
+
+    const moods = [
+      "tenderly absurd", "brightly suspicious", "luxuriously unoptimized",
+      "moonlit and practical", "ceremonial but quick", "warmly sharp",
+      "slightly theatrical", "quietly rebellious", "sun-dazed", "polished by accident"
+    ];
+
+    const moves = [
+      "Give it one button: reveal today's impossible instruction, then let it vanish after being copied.",
+      "Draw the first version as a paper label, not a form. The label should feel found, not completed.",
+      "Start with three specimens and one rule for how a new specimen mutates when clicked.",
+      "Let the interface ask for no data. It should infer its mood from the hour and surprise you first.",
+      "Make the useful part small enough to hide in the corner. Let the strange part take the room.",
+      "Write a single example in a voice so specific that the rest of the piece has to follow it.",
+      "Turn the next decision into a prop, a corridor, a knock, or a small weather event.",
+      "Add a save button only after the spark has earned it."
+    ];
+
+    const grafts = [
+      "Graft onto a3 as a sunlight charm that interrupts doomscrolling with a tiny outdoor dare.",
+      "Graft onto b1 as a take generator mode called elegantly unreasonable.",
+      "Graft onto b3 as a monthly weather legend drawn from words Monika keeps avoiding.",
+      "Graft onto a4 as one fresh criminal misunderstanding for the next Polish storybook scene.",
+      "Graft onto c2 as a dinner theme that pairs guests by secret fictional professions.",
+      "Graft onto b4 as a style archetype that shops for texture, posture, and nerve.",
+      "Graft onto a1 as a reframe that behaves like a tiny director, not a therapist.",
+      "Keep ungrafted. Some sparks are better as loose matches in a drawer."
+    ];
+
+    const adjectives = [
+      "Pocket", "Impossible", "Moonlit", "Velvet", "Sideways", "Tiny",
+      "Rebellious", "Borrowed", "Unscheduled", "Secret", "Chrome", "Paper"
+    ];
+
+    const nouns = [
+      "Weather Key", "Appliance Heist", "Style Errand", "Decision Theater",
+      "Greeting Knock", "Calendar Fog", "Dinner Signal", "Useful Mirage",
+      "Prophecy Shelf", "Sun Trap", "Complaint Lantern", "Idea Fossil"
+    ];
+
+    const state = {
+      drawer: 0,
+      variant: 0,
+      spark: null,
+      motes: [],
+      raf: 0
+    };
+
+    const storageKey = "wild-spark-cabinet-pins";
+    const els = {
+      drawers: document.querySelector("#drawers"),
+      code: document.querySelector("#spark-code"),
+      title: document.querySelector("#spark-title"),
+      text: document.querySelector("#spark-text"),
+      firstMove: document.querySelector("#first-move"),
+      graft: document.querySelector("#graft"),
+      another: document.querySelector("#another"),
+      mutate: document.querySelector("#mutate"),
+      pin: document.querySelector("#pin"),
+      pinned: document.querySelector("#pinned"),
+      nudge: document.querySelector("#nudge"),
+      toast: document.querySelector("#toast"),
+      canvas: document.querySelector("#sky")
+    };
+
+    const ctx = els.canvas.getContext("2d");
+
+    function hashText(text) {
+      let h = 2166136261;
+      for (let i = 0; i < text.length; i += 1) {
+        h ^= text.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return h >>> 0;
+    }
+
+    function rng(seed) {
+      let value = seed >>> 0;
+      return () => {
+        value += 0x6D2B79F5;
+        let t = value;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function pick(list, random) {
+      return list[Math.floor(random() * list.length) % list.length];
+    }
+
+    function generate(drawer, variant) {
+      const nudge = els.nudge.value.trim().slice(0, 180);
+      const seed = hashText(`${drawer}:${variant}:${nudge || "wild"}`);
+      const random = rng(seed);
+      const title = `${pick(adjectives, random)} ${pick(nouns, random)}`;
+      const subject = pick(subjects, random);
+      const mood = pick(moods, random);
+      const first = pick(moves, random);
+      const graft = pick(grafts, random);
+      const nudgeLine = nudge ? ` It carries the nudge "${nudge}" like a hidden label.` : "";
+      return {
+        code: `${drawers[drawer]} / ${String(seed).slice(0, 4)}`,
+        title,
+        text: `Invent ${subject}. Make it ${mood}. It should propose one vivid first move before it asks anything from you.${nudgeLine}`,
+        first,
+        graft,
+        hue: Math.floor(42 + random() * 280),
+        seed
+      };
+    }
+
+    function renderDrawers() {
+      els.drawers.replaceChildren();
+      drawers.forEach((name, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "drawer";
+        button.style.setProperty("--drawer-hue", String(35 + ((index * 31) % 300)));
+        button.setAttribute("aria-pressed", String(index === state.drawer));
+        const label = document.createElement("span");
+        label.textContent = name;
+        button.append(label);
+        button.addEventListener("click", () => {
+          state.drawer = index;
+          state.variant = 0;
+          showSpark();
+        });
+        els.drawers.append(button);
+      });
+    }
+
+    function showSpark() {
+      state.spark = generate(state.drawer, state.variant);
+      els.code.textContent = state.spark.code;
+      els.title.textContent = state.spark.title;
+      els.text.textContent = state.spark.text;
+      els.firstMove.textContent = state.spark.first;
+      els.graft.textContent = state.spark.graft;
+      renderDrawers();
+      seedMotes(state.spark.seed);
+    }
+
+    function readPins() {
+      try {
+        const pins = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        return Array.isArray(pins) ? pins.slice(0, 16) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function writePins(pins) {
+      localStorage.setItem(storageKey, JSON.stringify(pins.slice(0, 16)));
+    }
+
+    function renderPins() {
+      const pins = readPins();
+      els.pinned.replaceChildren();
+      if (!pins.length) {
+        const empty = document.createElement("p");
+        empty.className = "empty";
+        empty.textContent = "No sparks pinned yet. Keep only the ones that make your thinking loosen.";
+        els.pinned.append(empty);
+        return;
+      }
+      pins.forEach((pin, index) => {
+        const item = document.createElement("article");
+        item.className = "pin";
+        const title = document.createElement("strong");
+        title.textContent = pin.title;
+        const note = document.createElement("span");
+        note.textContent = pin.graft;
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "action secondary";
+        remove.textContent = "Release";
+        remove.style.marginTop = "0.65rem";
+        remove.addEventListener("click", () => {
+          const next = readPins();
+          next.splice(index, 1);
+          writePins(next);
+          renderPins();
+        });
+        item.append(title, note, remove);
+        els.pinned.append(item);
+      });
+    }
+
+    function pinSpark() {
+      if (!state.spark) return;
+      const pins = readPins();
+      const exists = pins.some((pin) => pin.seed === state.spark.seed);
+      if (!exists) {
+        pins.unshift({
+          seed: state.spark.seed,
+          title: state.spark.title,
+          graft: state.spark.graft
+        });
+        writePins(pins);
+        renderPins();
+        flash("Pinned to this browser.");
+      } else {
+        flash("Already pinned.");
+      }
+    }
+
+    function flash(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add("show");
+      window.clearTimeout(flash.timer);
+      flash.timer = window.setTimeout(() => els.toast.classList.remove("show"), 1600);
+    }
+
+    function seedMotes(seed) {
+      const random = rng(seed);
+      const count = 54;
+      state.motes = Array.from({ length: count }, (_, index) => ({
+        x: random(),
+        y: random(),
+        r: 2 + random() * 11,
+        speed: 0.12 + random() * 0.36,
+        angle: random() * Math.PI * 2,
+        hue: state.spark.hue + index * 4,
+        kind: random() > 0.72 ? "square" : "dot"
+      }));
+    }
+
+    function resizeCanvas() {
+      const rect = els.canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      els.canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      els.canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function draw(time) {
+      const width = els.canvas.clientWidth;
+      const height = els.canvas.clientHeight;
+      ctx.clearRect(0, 0, width, height);
+      const gradient = ctx.createLinearGradient(0, 0, width, height);
+      gradient.addColorStop(0, "oklch(25% 0.07 244)");
+      gradient.addColorStop(0.48, "oklch(39% 0.09 303)");
+      gradient.addColorStop(1, "oklch(65% 0.12 78)");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.strokeStyle = "oklch(94% 0.07 82 / 0.28)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 7; i += 1) {
+        const y = height * (0.18 + i * 0.12);
+        ctx.beginPath();
+        for (let x = 0; x <= width; x += 18) {
+          const wave = Math.sin((x * 0.018) + (time * 0.0005) + i) * 7;
+          if (x === 0) ctx.moveTo(x, y + wave);
+          else ctx.lineTo(x, y + wave);
+        }
+        ctx.stroke();
+      }
+
+      state.motes.forEach((mote, index) => {
+        const drift = time * 0.00004 * mote.speed;
+        const x = ((mote.x + drift) % 1) * width;
+        const y = (mote.y + Math.sin(time * 0.001 * mote.speed + index) * 0.018) * height;
+        ctx.fillStyle = `oklch(79% 0.14 ${mote.hue} / 0.78)`;
+        ctx.strokeStyle = `oklch(98% 0.03 83 / 0.7)`;
+        if (mote.kind === "square") {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(mote.angle + time * 0.0003);
+          ctx.fillRect(-mote.r / 2, -mote.r / 2, mote.r, mote.r);
+          ctx.strokeRect(-mote.r / 2, -mote.r / 2, mote.r, mote.r);
+          ctx.restore();
+        } else {
+          ctx.beginPath();
+          ctx.arc(x, y, mote.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+
+      state.raf = requestAnimationFrame(draw);
+    }
+
+    els.another.addEventListener("click", () => {
+      state.drawer = (state.drawer + 1 + Math.floor(Math.random() * 5)) % drawers.length;
+      state.variant += 1;
+      showSpark();
+    });
+
+    els.mutate.addEventListener("click", () => {
+      state.variant += 1;
+      showSpark();
+    });
+
+    els.pin.addEventListener("click", pinSpark);
+    els.nudge.addEventListener("input", () => {
+      state.variant += 1;
+      showSpark();
+    });
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    renderPins();
+    showSpark();
+    state.raf = requestAnimationFrame(draw);
+  </script>
+</body>
+</html>
